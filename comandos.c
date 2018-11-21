@@ -14,17 +14,20 @@ bool comparar_fechas(char* fecha_inicio, char* fecha_fin){
 	char** anio_mes_fin = split(fecha_fin, '-');
 
 	char* ptr;
-	size_t i = 0;
-	for(; i < 2; i++){
-		if(strtol(anio_mes_fin[i],&ptr, 10) < strtol(anio_mes_inicio[i],&ptr, 10))
-			return false;
-	}
-
-	char** dia_inicio = split(anio_mes_inicio[i], 'T');
-	char** dia_fin = split(anio_mes_fin[i], 'T');
-	if(strtol(*dia_fin,&ptr, 10) < strtol(*dia_inicio,&ptr, 10))
+	
+	if(strtol(anio_mes_fin[0],&ptr, 10) < strtol(anio_mes_inicio[0],&ptr, 10))
 		return false;
-
+	else if(strtol(anio_mes_fin[0],&ptr, 10) == strtol(anio_mes_inicio[0],&ptr, 10)){
+		if(strtol(anio_mes_fin[1],&ptr, 10) < strtol(anio_mes_inicio[1],&ptr, 10))
+			return false;
+			
+		else if(strtol(anio_mes_fin[1],&ptr, 10) == strtol(anio_mes_inicio[1],&ptr, 10)){	
+			char** dia_inicio = split(anio_mes_inicio[2], 'T');
+			char** dia_fin = split(anio_mes_fin[2], 'T');
+			if(strtol(*dia_fin,&ptr, 10) < strtol(*dia_inicio,&ptr, 10))
+				return false;
+		}
+	}
 	return true;
 }
 
