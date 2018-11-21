@@ -25,8 +25,7 @@ bool comparar_fechas(char* fecha_inicio, char* fecha_fin){
 	return true;
 }
 
-bool validar_argumentos(char* argv[], comando_t* comando, long int* vuelos){		
-
+bool validar_argumentos(char* argv[], comando_t* comando, long int* vuelos){	
 	char* ptr;
 
 	if(!strcmp(*argv, CMD_AGREGAR_ARCHIVO))
@@ -49,20 +48,21 @@ bool validar_argumentos(char* argv[], comando_t* comando, long int* vuelos){
 			*comando = VER_TABLERO;
 		}
 
-		else if(!strcmp(*argv, CMD_INFORMACION_VUELO)){
+		if(!strcmp(*argv, CMD_INFORMACION_VUELO)){
 			*vuelos = strtol(argv[CMD_POS_CODIGO_VUELO],&ptr, 10);
 			*comando = INFORMACION_VUELO;
 		}
-		else if(!strcmp(*argv, CMD_PRIORIDAD_VUELOS)){
+
+		if(!strcmp(*argv, CMD_PRIORIDAD_VUELOS)){
 			*vuelos = strtol(argv[CMD_POS_PRIO_VUELO],&ptr, 10);
 			*comando = PRIORIDAD_VUELOS;
 		}
 
+		if(!comando)
+			return false;
+
 		if(*vuelos <= 0 || *ptr)
 			return false;
 	} 
-	if(!comando)
-		return false;
-	
 	return true;
 }
