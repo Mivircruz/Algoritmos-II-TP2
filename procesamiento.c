@@ -1,5 +1,7 @@
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "abb.h"
 #include "hash.h"
 #include "strutil.h"
@@ -22,7 +24,7 @@ void agregar_archivo(FILE* archivo, hash_t* hash, abb_t* abb){
 
 		info_vuelo = split(linea, ',');
 
-		hash_guardar(hash, join(info_vuelo), info_vuelo[POS_NUMERO_VUELO]);
+		hash_guardar(hash, join(info_vuelo, ' '), info_vuelo[POS_NUMERO_VUELO]);
 		abb_guardar(abb, info_vuelo[POS_FECHA_VUELO],info_vuelo[POS_NUMERO_VUELO]);
 
 	}
