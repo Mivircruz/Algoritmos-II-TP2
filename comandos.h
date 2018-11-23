@@ -1,9 +1,9 @@
 #ifndef COMANDOS_H
 #define COMANDOS_H
-
+		
 #define CMD_AGREGAR_ARCHIVO			"agregar_archivo"
 #define CMD_POS_AGREGAR_ARCHIVO		1
-
+				
 #define CMD_VER_TABLERO				"ver_tablero"
 #define CMD_POS_CANT_VUELOS			1
 #define CMD_POS_MODO				2
@@ -12,7 +12,7 @@
 #define MODO_ASCENDENTE				"asc"
 #define MODO_DESCENDENTE			"desc"
 
-#define CMD_INFORMACION_VUELO		"info_vuelo"
+#define CMD_INFO_VUELO				"info_vuelo"
 #define CMD_POS_CODIGO_VUELO		1
 
 #define CMD_PRIORIDAD_VUELOS		"prioridad_vuelos"
@@ -24,6 +24,7 @@
 #define CDM_FECHA_BORRAR_FIN		2
 
 #define CANT_DATOS_VUELO			10
+
 
 
 bool validar_argumentos(char* linea[], char** comando, long int* vuelos);
