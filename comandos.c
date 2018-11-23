@@ -7,6 +7,7 @@
 #include "comandos.h"
 #include "strutil.h"
 
+
 //Compara las fechas de inicio y fin. 
 //Devuelve true en caso de que la fecha de inicio sea menor que la de fin, false en caso contrario.
 
@@ -73,9 +74,9 @@ bool validar_argumentos(char* linea[], char** comando, long int* vuelos){
 				return false;
 		}
 
-		if(!strcmp(*linea, CMD_INFORMACION_VUELO)){
+		if(!strcmp(*linea, CMD_INFO_VUELO)){
 
-			*comando = strdup(CMD_INFORMACION_VUELO);
+			*comando = strdup(CMD_INFO_VUELO);
 			*vuelos = strtol(linea[CMD_POS_CODIGO_VUELO],&ptr, 10);
 		}
 
@@ -84,8 +85,9 @@ bool validar_argumentos(char* linea[], char** comando, long int* vuelos){
 			*comando = strdup(CMD_PRIORIDAD_VUELOS);
 			*vuelos = strtol(linea[CMD_POS_PRIO_VUELO], &ptr, 10);
 		}
-		if(*vuelos <= 0 || *ptr)
+		if(*vuelos <= 0 || *ptr){
 			return false;
+		}
 	} 
 	return true;
 }
