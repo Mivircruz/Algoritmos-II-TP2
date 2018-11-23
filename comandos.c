@@ -1,3 +1,5 @@
+ #define _GNU_SOURCE
+
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
@@ -43,7 +45,7 @@ void quitar_salto_linea(char* linea){
 
 //Valida los comandos pasados por parámetro
 
-bool validar_argumentos(char* linea[], comando_t* comando, long int* vuelos){	
+bool validar_argumentos(char* linea[], char** comando, long int* vuelos){	
 	
 	char* ptr;
 
@@ -51,40 +53,37 @@ bool validar_argumentos(char* linea[], comando_t* comando, long int* vuelos){
 		quitar_salto_linea(linea[i]);
 
 	if(!strcmp(*linea, CMD_AGREGAR_ARCHIVO))
-		*comando = AGREGAR_ARCHIVO;
+		*comando = strdup(CMD_AGREGAR_ARCHIVO);
 
 	if(!strcmp(*linea, CMD_BORRAR_VUELOS)){
 
+		*comando = strdup(CMD_BORRAR_VUELOS);
 		if(!comparar_fechas(linea[CDM_FECHA_BORRAR_INICIO], linea[CDM_FECHA_BORRAR_FIN]))
 			return false;
-		*comando = BORRAR_VUELO;
 	}
 	else{
 
 		if(!strcmp(*linea, CMD_VER_TABLERO)){
 
+			*comando = strdup(CMD_VER_TABLERO);
 			*vuelos = strtol(linea[CMD_POS_CANT_VUELOS],&ptr, 10);
 			if(strcmp(linea[CMD_POS_MODO], MODO_ASCENDENTE) && strcmp(linea[CMD_POS_MODO],MODO_DESCENDENTE))
 				return false;
 			if(!comparar_fechas(linea[CMD_FECHA_VT_INICIO], linea[CMD_FECHA_VT_FIN]))
 				return false;
-			*comando = VER_TABLERO;
 		}
 
 		if(!strcmp(*linea, CMD_INFORMACION_VUELO)){
+
+			*comando = strdup(CMD_INFORMACION_VUELO);
 			*vuelos = strtol(linea[CMD_POS_CODIGO_VUELO],&ptr, 10);
-			*comando = INFORMACION_VUELO;
 		}
 
 		if(!strcmp(*linea, CMD_PRIORIDAD_VUELOS)){
 
+			*comando = strdup(CMD_PRIORIDAD_VUELOS);
 			*vuelos = strtol(linea[CMD_POS_PRIO_VUELO], &ptr, 10);
-			*comando = PRIORIDAD_VUELOS;
 		}
-
-		if(!comando)
-			return false;
-
 		if(*vuelos <= 0 || *ptr)
 			return false;
 	} 
