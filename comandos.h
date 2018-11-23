@@ -17,10 +17,13 @@
 
 #define CMD_PRIORIDAD_VUELOS		"prioridad_vuelos"
 #define CMD_POS_PRIO_VUELO			1
+#define POS_CSV_PRIO_VUELO			5
 
 #define CMD_BORRAR_VUELOS			"borrar"
 #define CDM_FECHA_BORRAR_INICIO		1
 #define CDM_FECHA_BORRAR_FIN		2
+
+#define CANT_DATOS_VUELO			10
 
 typedef enum{
 	SIN_COMANDO = 0,
