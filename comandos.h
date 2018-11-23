@@ -25,15 +25,7 @@
 
 #define CANT_DATOS_VUELO			10
 
-typedef enum{
-	SIN_COMANDO = 0,
-	AGREGAR_ARCHIVO,
-	VER_TABLERO,
-	INFORMACION_VUELO,
-	PRIORIDAD_VUELOS,
-	BORRAR_VUELO
-}comando_t;
 
-bool validar_argumentos(char* linea[], comando_t* comando, long int* vuelos);
+bool validar_argumentos(char* linea[], char** comando, long int* vuelos);
 
 #endif
