@@ -1,6 +1,5 @@
  #define _GNU_SOURCE
 
-
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
@@ -26,8 +25,6 @@ int main(int argc, char* argv[]){
 	while(getline(&linea, &capacidad, stdin) != -1){
 
 		if(!validar_argumentos(split(linea, ' '), &comando, &vuelo)){
-			hash_destruir(hash);
-			abb_destruir(abb);
 			if(!comando)
 				fprintf(stderr, "Error\n");
 			else{
@@ -38,5 +35,7 @@ int main(int argc, char* argv[]){
 		else
 			printf("NO ERROR :)\n");
 	}
+	hash_destruir(hash);
+	abb_destruir(abb);
 	return 0;
 }
