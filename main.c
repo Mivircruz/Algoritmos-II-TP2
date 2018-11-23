@@ -13,7 +13,6 @@ int main(int argc, char* argv[]){
 //Inicialización de variables 
 
 	char* comando;
-	comando = NULL;
 	long int vuelo = 0;
 	char* linea = NULL;
 	size_t capacidad = 0;
@@ -24,12 +23,13 @@ int main(int argc, char* argv[]){
 
 	while(getline(&linea, &capacidad, stdin) != -1){
 
+		comando = NULL;
 		if(!validar_argumentos(split(linea, ' '), &comando, &vuelo)){
 			if(!comando)
 				fprintf(stderr, "Error\n");
 			else{
-				free(comando);
 				fprintf(stderr, "Error en comando %s\n", comando);
+				free(comando);
 			}
 		}
 		else
