@@ -22,9 +22,10 @@ int main(int argc, char* argv[]){
 //Procesamiento de comandos
 
 	while(getline(&linea, &capacidad, stdin) != -1){
-
+		
+		char** vector_linea = split(linea, ' ');
 		comando = NULL;
-		if(!validar_argumentos(split(linea, ' '), &comando, &vuelo)){
+		if(!validar_argumentos(vector_linea, &comando, &vuelo)){
 			if(!comando)
 				fprintf(stderr, "Error\n");
 			else{
