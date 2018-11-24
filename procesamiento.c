@@ -37,11 +37,12 @@ int comparar_prioridades(const void* a, const void* b){
  *                        FUNCIONES PRINCIPALES
  * *****************************************************************/
 
-bool agregar_archivo(FILE* archivo, hash_t* hash, abb_t* abb){
+bool agregar_archivo(char* nombre_archivo, hash_t* hash, abb_t* abb){
 
 	char* linea = NULL;
 	size_t capacidad = 0;
 	char** info_vuelo;
+	FILE* archivo = fopen(nombre_archivo, "r");
 
 	while(!feof(archivo)){
 
@@ -54,15 +55,18 @@ bool agregar_archivo(FILE* archivo, hash_t* hash, abb_t* abb){
 		abb_guardar(abb, info_vuelo[POS_NUMERO_VUELO], info_vuelo[POS_FECHA_VUELO]);
 
 	}
+	fclose(archivo);
 	return true;
 }
 
-bool ver_informacion_vuelo(hash_t* hash, char* codigo_vuelo, char** informacion){
-
-	void* info_vuelo = hash_obtener(hash, codigo_vuelo);
+bool ver_informacion_vuelo(hash_t* hash, long int* codigo_vuelo, char* informacion){
+	
+	char codigo[sizeof(long int*)];
+	sprintf(codigo, "%ld", *(long*)codigo_vuelo);
+	void* info_vuelo = hash_obtener(hash, codigo);
 	if(!info_vuelo)
 		return false;
-	*informacion = (char*)info_vuelo;
+	informacion = (char*)info_vuelo;
 	return true;
 }
 
