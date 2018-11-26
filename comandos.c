@@ -1,4 +1,4 @@
- #define _GNU_SOURCE
+#define _GNU_SOURCE
 
 #include <stdio.h>
 #include <stdbool.h>
@@ -65,7 +65,7 @@ bool ejecutar_comandos(char* linea[], hash_t* hash, abb_t* abb, char** comando){
 
 	//Declaración de variables auxiliares e inicialización
 
-	long int* vuelos = 0;
+	long int vuelos = 0;
 	quitar_salto_en_arreglo(linea);
 
 	//Ejecución del comando correspondiente
@@ -85,7 +85,7 @@ bool ejecutar_comandos(char* linea[], hash_t* hash, abb_t* abb, char** comando){
 
 	if(!strcmp(*linea, CMD_VER_TABLERO)){
 		*comando = strdup(CMD_VER_TABLERO);
-		if(!vuelo_valido(linea[CMD_POS_CANT_VUELOS], vuelos) || !comparar_fechas(linea[CMD_FECHA_VT_INICIO], linea[CMD_FECHA_VT_FIN]))
+		if(!vuelo_valido(linea[CMD_POS_CANT_VUELOS], &vuelos) || !comparar_fechas(linea[CMD_FECHA_VT_INICIO], linea[CMD_FECHA_VT_FIN]))
 			return false;
 		if(strcmp(linea[CMD_POS_MODO], MODO_ASCENDENTE) && strcmp(linea[CMD_POS_MODO],MODO_DESCENDENTE))
 			return false;
@@ -98,9 +98,10 @@ bool ejecutar_comandos(char* linea[], hash_t* hash, abb_t* abb, char** comando){
 	}
 	if(!strcmp(*linea, CMD_PRIORIDAD_VUELOS)){
 		*comando = strdup(CMD_PRIORIDAD_VUELOS);
-		if(!vuelo_valido(linea[CMD_POS_PRIO_VUELO], vuelos))
+		if(!vuelo_valido(linea[CMD_POS_PRIO_VUELO], &vuelos))
 			return false;
-		return prioridad_vuelos(hash, *vuelos);	
+		return prioridad_vuelos(hash, vuelos);	
 	}
 	return false;
 }
+
