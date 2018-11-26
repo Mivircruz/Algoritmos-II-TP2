@@ -33,6 +33,8 @@ int comparar_prioridades(const void* a, const void* b){
 	return 0;
 }
 
+
+
 /* ******************************************************************
  *                        FUNCIONES PRINCIPALES
  * *****************************************************************/
@@ -43,6 +45,9 @@ bool agregar_archivo(char* nombre_archivo, hash_t* hash, abb_t* abb){
 	size_t capacidad = 0;
 	char** info_vuelo;
 	FILE* archivo = fopen(nombre_archivo, "r");
+
+	if(!archivo)
+		return false;
 
 	while(!feof(archivo)){
 
