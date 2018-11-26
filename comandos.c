@@ -5,8 +5,10 @@
 #include <string.h>
 #include <stdlib.h>
 #include "comandos.h"
+#include "procesamiento.h"
+#include "hash.h"
+#include "abb.h"
 #include "strutil.h"
-
 
 //Compara las fechas de inicio y fin. 
 //Devuelve true en caso de que la fecha de inicio sea menor que la de fin, false en caso contrario.
@@ -34,6 +36,18 @@ bool comparar_fechas(char* fecha_inicio, char* fecha_fin){
 	return true;
 }
 
+//Si la cantidad de vuelos a imprimir es un número entero mayor a cero, devuelve true.
+//Devuelve false en caso contrario.
+bool vuelo_valido(char* linea, long int* vuelos){
+
+	char* ptr;
+	*vuelos = strtol(linea,&ptr, 10);
+
+	if(*vuelos <= 0 || *ptr)
+		return false;
+	return true;
+}
+
 //Elimina el salto de línea para procesar las líneas
 
 void quitar_salto_linea(char* linea){
@@ -44,50 +58,51 @@ void quitar_salto_linea(char* linea){
 
 }
 
-//Valida los comandos pasados por parámetro
+//Valida los comandos pasados por parámetro y ejecuta la función correspondiente
 
-bool validar_argumentos(char* linea[], char** comando, long int* vuelos){	
-	
-	char* ptr;
+bool ejecutar_comandos(char* linea[], hash_t* hash, abb_t* abb, char** comando){
 
+	//Declaración de variables auxiliares e inicialización
+
+	long int* vuelos = 0;
 	for(size_t i = 0; linea[i]; i++)
 		quitar_salto_linea(linea[i]);
 
-	if(!strcmp(*linea, CMD_AGREGAR_ARCHIVO))
+	//Ejecución del comando correspondiente
+
+	if(!strcmp(*linea, CMD_AGREGAR_ARCHIVO)){
 		*comando = strdup(CMD_AGREGAR_ARCHIVO);
+		return agregar_archivo(linea[CMD_POS_ARCHIVO], hash, abb);
+	}
 
 	if(!strcmp(*linea, CMD_BORRAR_VUELOS)){
-
 		*comando = strdup(CMD_BORRAR_VUELOS);
 		if(!comparar_fechas(linea[CDM_FECHA_BORRAR_INICIO], linea[CDM_FECHA_BORRAR_FIN]))
 			return false;
+	
+	//FALTA FUNCIÓN BORRAR 				!!!!!!!!
 	}
-	else{
 
-		if(!strcmp(*linea, CMD_VER_TABLERO)){
-
-			*comando = strdup(CMD_VER_TABLERO);
-			*vuelos = strtol(linea[CMD_POS_CANT_VUELOS],&ptr, 10);
-			if(strcmp(linea[CMD_POS_MODO], MODO_ASCENDENTE) && strcmp(linea[CMD_POS_MODO],MODO_DESCENDENTE))
-				return false;
-			if(!comparar_fechas(linea[CMD_FECHA_VT_INICIO], linea[CMD_FECHA_VT_FIN]))
-				return false;
-		}
-
-		if(!strcmp(*linea, CMD_INFO_VUELO)){
-
-			*comando = strdup(CMD_INFO_VUELO);
-			*vuelos = strtol(linea[CMD_POS_CODIGO_VUELO],&ptr, 10);
-		}
-
-		if(!strcmp(*linea, CMD_PRIORIDAD_VUELOS)){
-
-			*comando = strdup(CMD_PRIORIDAD_VUELOS);
-			*vuelos = strtol(linea[CMD_POS_PRIO_VUELO], &ptr, 10);
-		}
-		if(*vuelos <= 0 || *ptr){
+	if(!strcmp(*linea, CMD_VER_TABLERO)){
+		*comando = strdup(CMD_VER_TABLERO);
+		if(!vuelo_valido(linea[CMD_POS_CANT_VUELOS], vuelos) || !comparar_fechas(linea[CMD_FECHA_VT_INICIO], linea[CMD_FECHA_VT_FIN]))
 			return false;
-		}
-	} 
-	return true;
+		if(strcmp(linea[CMD_POS_MODO], MODO_ASCENDENTE) && strcmp(linea[CMD_POS_MODO],MODO_DESCENDENTE))
+			return false;
+	//FALTA FUNCIÓN VER TABLERO 				!!!!!!!!
+	}
+
+	if(!strcmp(*linea, CMD_INFO_VUELO)){
+		*comando = strdup(CMD_INFO_VUELO);
+		if(!vuelo_valido(linea[CMD_POS_CODIGO_VUELO], vuelos))
+			return false;
+		//return ver_informacion_vuelo(hash, *vuelos);
+	}
+	if(!strcmp(*linea, CMD_PRIORIDAD_VUELOS)){
+		*comando = strdup(CMD_PRIORIDAD_VUELOS);
+		if(!vuelo_valido(linea[CMD_POS_PRIO_VUELO], vuelos))
+			return false;
+		return prioridad_vuelos(hash, *vuelos);	
+	}
+	return false;
 }
