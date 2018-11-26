@@ -29,7 +29,14 @@
 #define CANT_DATOS_VUELO			10
 
 
-
+//Valida los comandos pasados por parámetro y ejecuta la función correspondiente
 bool ejecutar_comandos(char* linea[], hash_t* hash, abb_t* abb,char** comando);
+
+//Si la cantidad de vuelos a imprimir es un número entero mayor a cero, devuelve true.
+//Devuelve false en caso contrario.
+bool vuelo_valido(char* linea, long int* vuelos);
+
+//Quita el '\n' de la línea
+void quitar_salto_en_arreglo(char** arreglo);
 
 #endif
