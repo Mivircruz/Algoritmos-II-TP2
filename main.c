@@ -13,19 +13,19 @@ int main(int argc, char* argv[]){
 //Inicialización de variables 
 
 	char* comando;
-	long int vuelo = 0;
 	char* linea = NULL;
 	size_t capacidad = 0;
+	bool terminar_ejecucion = false;
 	hash_t* hash = hash_crear(NULL);
 	abb_t* abb = abb_crear(strcmp, NULL);
 
 //Procesamiento de comandos
 
-	while(getline(&linea, &capacidad, stdin) != -1){
+	while(terminar_ejecucion || getline(&linea, &capacidad, stdin) != -1){
 		
-		char** vector_linea = split(linea, ' ');
 		comando = NULL;
-		if(!validar_argumentos(vector_linea, &comando, &vuelo)){
+		char** vector_linea = split(linea, ' ');
+		if(!ejecutar_comandos(vector_linea, hash, abb, &comando)){
 			if(!comando)
 				fprintf(stderr, "Error\n");
 			else{
@@ -34,7 +34,7 @@ int main(int argc, char* argv[]){
 			}
 		}
 		else
-			printf("NO ERROR :)\n");
+			printf("OK\n");
 	}
 	hash_destruir(hash);
 	abb_destruir(abb);
