@@ -36,8 +36,6 @@ bool comparar_fechas(char* fecha_inicio, char* fecha_fin){
 	return true;
 }
 
-//Si la cantidad de vuelos a imprimir es un número entero mayor a cero, devuelve true.
-//Devuelve false en caso contrario.
 bool vuelo_valido(char* linea, long int* vuelos){
 
 	char* ptr;
@@ -58,15 +56,17 @@ void quitar_salto_linea(char* linea){
 
 }
 
-//Valida los comandos pasados por parámetro y ejecuta la función correspondiente
+void quitar_salto_en_arreglo(char** arreglo){
+	for(size_t i = 0; arreglo[i]; i++)
+		quitar_salto_linea(arreglo[i]);
+}
 
 bool ejecutar_comandos(char* linea[], hash_t* hash, abb_t* abb, char** comando){
 
 	//Declaración de variables auxiliares e inicialización
 
 	long int* vuelos = 0;
-	for(size_t i = 0; linea[i]; i++)
-		quitar_salto_linea(linea[i]);
+	quitar_salto_en_arreglo(linea);
 
 	//Ejecución del comando correspondiente
 
@@ -94,9 +94,7 @@ bool ejecutar_comandos(char* linea[], hash_t* hash, abb_t* abb, char** comando){
 
 	if(!strcmp(*linea, CMD_INFO_VUELO)){
 		*comando = strdup(CMD_INFO_VUELO);
-		if(!vuelo_valido(linea[CMD_POS_CODIGO_VUELO], vuelos))
-			return false;
-		//return ver_informacion_vuelo(hash, *vuelos);
+		return ver_informacion_vuelo(hash, linea[CMD_POS_CODIGO_VUELO]);
 	}
 	if(!strcmp(*linea, CMD_PRIORIDAD_VUELOS)){
 		*comando = strdup(CMD_PRIORIDAD_VUELOS);
