@@ -1,8 +1,11 @@
 #ifndef COMANDOS_H
 #define COMANDOS_H
+
+#include "hash.h"
+#include "abb.h"
 		
 #define CMD_AGREGAR_ARCHIVO			"agregar_archivo"
-#define CMD_POS_AGREGAR_ARCHIVO		1
+#define CMD_POS_ARCHIVO				1
 				
 #define CMD_VER_TABLERO				"ver_tablero"
 #define CMD_POS_CANT_VUELOS			1
@@ -27,6 +30,6 @@
 
 
 
-bool validar_argumentos(char* linea[], char** comando, long int* vuelos);
+bool ejecutar_comandos(char* linea[], hash_t* hash, abb_t* abb,char** comando);
 
 #endif
