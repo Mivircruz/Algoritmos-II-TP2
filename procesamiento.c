@@ -49,12 +49,10 @@ bool agregar_archivo(char* nombre_archivo, hash_t* hash, abb_t* abb){
 	if(!archivo)
 		return false;
 
-	while(!feof(archivo)){
-
-		if(getline(&linea, &capacidad, archivo) == -1)
-			break;
+	while(!feof(archivo) && getline(&linea, &capacidad, archivo) != -1){
 
 		info_vuelo = split(linea, ',');
+		quitar_salto_en_arreglo(info_vuelo);
 
 		hash_guardar(hash, info_vuelo[POS_NUMERO_VUELO], join(info_vuelo, ' '));
 		abb_guardar(abb, info_vuelo[POS_NUMERO_VUELO], info_vuelo[POS_FECHA_VUELO]);
@@ -64,14 +62,12 @@ bool agregar_archivo(char* nombre_archivo, hash_t* hash, abb_t* abb){
 	return true;
 }
 
-bool ver_informacion_vuelo(hash_t* hash, long int* codigo_vuelo, char* informacion){
+bool ver_informacion_vuelo(hash_t* hash, char* codigo_vuelo){
 	
-	char codigo[sizeof(long int*)];
-	sprintf(codigo, "%ld", *(long*)codigo_vuelo);
-	void* info_vuelo = hash_obtener(hash, codigo);
+	void* info_vuelo = hash_obtener(hash, codigo_vuelo);
 	if(!info_vuelo)
 		return false;
-	informacion = (char*)info_vuelo;
+	printf("%s\n",(char*)info_vuelo);
 	return true;
 }
 
