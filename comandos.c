@@ -79,8 +79,8 @@ bool ejecutar_comandos(char* linea[], hash_t* hash, abb_t* abb, char** comando){
 		*comando = strdup(CMD_BORRAR_VUELOS);
 		if(!comparar_fechas(linea[CMD_FECHA_BORRAR_INICIO], linea[CMD_FECHA_BORRAR_FIN]))
 			return false;
-	
-	//FALTA FUNCIÓN BORRAR 				!!!!!!!!
+		
+		return borrar(abb, hash, linea[CMD_FECHA_BORRAR_INICIO], linea[CMD_FECHA_BORRAR_FIN]);
 	}
 
 	if(!strcmp(*linea, CMD_VER_TABLERO)){
