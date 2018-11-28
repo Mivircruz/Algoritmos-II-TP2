@@ -95,7 +95,8 @@ bool borrar(abb_t* abb, hash_t* hash, char* fecha_desde, char* fecha_hasta){
 		if(strcmp(clave, fecha_desde)>0 && strcmp(clave, fecha_hasta)<0){
 			
 			char* linea = (char*)abb_borrar(abb, clave);
-			hash_borrar(hash, clave);
+			char** vector_linea = split(linea, ' ');
+			hash_borrar(hash, vector_linea[POS_NUMERO_VUELO]);
 			printf("\n%s", linea);
 		}
 		
