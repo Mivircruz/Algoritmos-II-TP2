@@ -89,7 +89,8 @@ bool ejecutar_comandos(char* linea[], hash_t* hash, abb_t* abb, char** comando){
 			return false;
 		if(strcmp(linea[CMD_POS_MODO], MODO_ASCENDENTE) && strcmp(linea[CMD_POS_MODO],MODO_DESCENDENTE))
 			return false;
-	//FALTA FUNCIÓN VER TABLERO 				!!!!!!!!
+		
+		return ver_tablero(abb, vuelos, linea[CMD_FECHA_VT_INICIO], linea[CMD_FECHA_VT_FIN], linea[CMD_POS_MODO]);
 	}
 
 	if(!strcmp(*linea, CMD_INFO_VUELO)){
