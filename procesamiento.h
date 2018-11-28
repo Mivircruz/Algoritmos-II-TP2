@@ -15,4 +15,10 @@ bool ver_informacion_vuelo(hash_t* hash, char* codigo_vuelo);
 //Imprime una cantidad de vuelos pasada por parámetro según su prioridad.
 bool prioridad_vuelos(hash_t* hash, size_t cantidad_vuelos);
 
+//Imprime una cantidad de vuelos comprendidos entre las fechas indicadas.
+bool ver_tablero(abb_t* abb, size_t cantidad_vuelos, char* fecha_desde, char* fecha_hasta, char* modo);
+
+//Elimina los vuelos comprendidos entre las fechas indicadas, y los muestra por pantalla.
+bool borrar(abb_t* abb, hash_t* hash, char* fecha_desde, char* fecha_hasta);
+
 #endif
