@@ -85,6 +85,28 @@ bool ver_tablero(abb_t* abb, size_t cantidad_vuelos, char* fecha_desde, char* fe
 	return true;
 }
 
+bool borrar(abb_t* abb, hash_t* hash, char* fecha_desde, char* fecha_hasta){
+	
+	abb_iter_t* iter = abb_iter_in_crear(abb);
+	
+	for(size_t i =0; !abb_iter_in_al_final(iter); i++){
+		
+		const char* clave = abb_iter_in_ver_actual(iter);
+		if(strcmp(clave, fecha_desde)>0 && strcmp(clave, fecha_hasta)<0){
+			
+			char* linea = (char*)abb_borrar(abb, clave);
+			hash_borrar(hash, clave);
+			printf("\n%s", linea);
+		}
+		
+		abb_iter_in_avanzar(iter);
+	}
+	
+	abb_iter_in_destruir(iter);
+	
+	return true;
+}
+
 bool ver_informacion_vuelo(hash_t* hash, char* codigo_vuelo){
 	
 	void* info_vuelo = hash_obtener(hash, codigo_vuelo);
