@@ -23,8 +23,8 @@
 #define POS_CSV_PRIO_VUELO			5
 
 #define CMD_BORRAR_VUELOS			"borrar"
-#define CDM_FECHA_BORRAR_INICIO		1
-#define CDM_FECHA_BORRAR_FIN		2
+#define CMD_FECHA_BORRAR_INICIO		1
+#define CMD_FECHA_BORRAR_FIN		2
 
 #define CANT_DATOS_VUELO			10
 
