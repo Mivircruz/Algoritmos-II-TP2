@@ -28,17 +28,16 @@ int main(int argc, char* argv[]){
 		if(!ejecutar_comandos(vector_linea, hash, abb, &comando)){
 			if(!comando)
 				fprintf(stderr, "Error\n");
-			else{
+			else
 				fprintf(stderr, "Error en comando %s\n", comando);
-				free(comando);
-			}
 		}
 		else
 			printf("OK\n");
+		free(comando);
+		free_strv(vector_linea);
 		
 		if(!hash_cantidad(hash))
 			break;
-		free_strv(vector_linea);
 	}
 	hash_destruir(hash);
 	abb_destruir(abb);
