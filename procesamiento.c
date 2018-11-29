@@ -33,6 +33,14 @@ int comparar_prioridades(const void* a, const void* b){
 	return 0;
 }
 
+char** fecha_y_clave(const char* fecha, char* vuelo){
+	char** a_devolver = malloc(sizeof(char*) * 2);
+	*a_devolver = strdup(fecha);
+	a_devolver[1] = strdup(vuelo);
+	
+	return a_devolver;
+}
+
 char** prioridad_y_clave(char* linea){
 	char** a_devolver = malloc(sizeof(char*) * 2);
 	char** aux = split(linea, ' ');
@@ -67,10 +75,11 @@ bool agregar_archivo(char* nombre_archivo, hash_t* hash, abb_t* abb){
 
 		info_vuelo = split(linea, ',');
 		quitar_salto_en_arreglo(info_vuelo);
-
-		hash_guardar(hash, info_vuelo[POS_NUMERO_VUELO], join(info_vuelo, ' '));
-		abb_guardar(abb, info_vuelo[POS_NUMERO_VUELO], info_vuelo[POS_FECHA_VUELO]);
-		free_strv(info_vuelo);
+		char* vuelo = join(info_vuelo, ' ');
+		
+		hash_guardar(hash, info_vuelo[POS_NUMERO_VUELO], vuelo);
+		abb_guardar(abb, info_vuelo[POS_FECHA_VUELO], info_vuelo[POS_NUMERO_VUELO]);
+		free(vuelo);
 	}
 	fclose(archivo);
 	return true;
@@ -79,20 +88,24 @@ bool agregar_archivo(char* nombre_archivo, hash_t* hash, abb_t* abb){
 bool ver_tablero(abb_t* abb, size_t cantidad_vuelos, char* fecha_desde, char* fecha_hasta, char* modo){
 	
 	abb_iter_t* iter = abb_iter_in_crear(abb);
-	size_t guardados = 0;
+	size_t i, k = 0;
+	char** datos[cantidad_vuelos];
 	
-	for(size_t i = 0; guardados<cantidad_vuelos && !abb_iter_in_al_final(iter); i++){
+	for(i = 0; k<cantidad_vuelos && !abb_iter_in_al_final(iter); i++){
 		const char* clave = abb_iter_in_ver_actual(iter);
 		if(strcmp(clave, fecha_desde)>0 && strcmp(clave, fecha_hasta)<0){
 			
-			char** vector_linea = split((char*)abb_obtener(abb, clave), ' ');
-			printf("\n%s\t%s", vector_linea[POS_FECHA_VUELO], vector_linea[POS_NUMERO_VUELO]);
-
-			guardados++;
-			free_strv(vector_linea);
-		}
+			datos[k] = fecha_y_clave(clave, (char*)abb_obtener(abb, clave));
+			k++;
 			
+		}
 		abb_iter_in_avanzar(iter);
+	}
+	
+	for(i = 0; i < k; i++){
+		printf("\n%s - %s", *(datos[i]), datos[i][1]);
+		free(*(datos[i]));
+		free(datos[i][1]);
 	}
 	abb_iter_in_destruir(iter);
 	
