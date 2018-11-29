@@ -44,7 +44,7 @@ char** fecha_y_clave(const char* fecha, char* vuelo){
 char** prioridad_y_clave(char* linea){
 	char** a_devolver = malloc(sizeof(char*) * 2);
 	char** aux = split(linea, ' ');
-	*a_devolver = strdup(aux[POS_PRIORIDAD_VUELO]);
+	*a_devolver = strdup(aux[POS_CSV_PRIO_VUELO]);
 	a_devolver[1] = strdup(aux[POS_NUMERO_VUELO]);
 	free_strv(aux);
 	return a_devolver;
@@ -56,6 +56,8 @@ void destruir_prioridad_y_clave(void* a){
 	free((*aux)[1]);
 	free(*aux);
 }
+
+
 
 /* ******************************************************************
  *                        FUNCIONES PRINCIPALES
@@ -79,8 +81,8 @@ bool agregar_archivo(char* nombre_archivo, hash_t* hash, abb_t* abb){
 		
 		hash_guardar(hash, info_vuelo[POS_NUMERO_VUELO], vuelo);
 		abb_guardar(abb, info_vuelo[POS_FECHA_VUELO], info_vuelo[POS_NUMERO_VUELO]);
-		free(vuelo);
 	}
+	free(linea);
 	fclose(archivo);
 	return true;
 }
@@ -88,7 +90,7 @@ bool agregar_archivo(char* nombre_archivo, hash_t* hash, abb_t* abb){
 bool ver_tablero(abb_t* abb, size_t cantidad_vuelos, char* fecha_desde, char* fecha_hasta, char* modo){
 	
 	abb_iter_t* iter = abb_iter_in_crear(abb);
-	size_t i, k = 0;
+	int i, k = 0;
 	char** datos[cantidad_vuelos];
 	
 	for(i = 0; k<cantidad_vuelos && !abb_iter_in_al_final(iter); i++){
@@ -102,11 +104,21 @@ bool ver_tablero(abb_t* abb, size_t cantidad_vuelos, char* fecha_desde, char* fe
 		abb_iter_in_avanzar(iter);
 	}
 	
-	for(i = 0; i < k; i++){
-		printf("\n%s - %s", *(datos[i]), datos[i][1]);
+	if(strcmp(modo, MODO_ASCENDENTE) == 0){
+		for(i = 0; i < k; i++){
+		printf("%s - %s\n", *(datos[i]), datos[i][1]);
 		free(*(datos[i]));
 		free(datos[i][1]);
+		}
 	}
+	else{
+		for(i = k-1; 0 <= i; i--){
+		printf("%s - %s\n", *(datos[i]), datos[i][1]);
+		free(*(datos[i]));
+		free(datos[i][1]);
+		}
+	}
+	
 	abb_iter_in_destruir(iter);
 	
 	return true;
@@ -117,16 +129,17 @@ bool borrar(abb_t* abb, hash_t* hash, char* fecha_desde, char* fecha_hasta){
 	abb_iter_t* iter = abb_iter_in_crear(abb);
 	
 	for(size_t i =0; !abb_iter_in_al_final(iter); i++){
-		
+
 		const char* clave = abb_iter_in_ver_actual(iter);
 		if(strcmp(clave, fecha_desde)>0 && strcmp(clave, fecha_hasta)<0){
 			
 			char* linea = (char*)abb_borrar(abb, clave);
 			char** vector_linea = split(linea, ' ');
 			hash_borrar(hash, vector_linea[POS_NUMERO_VUELO]);
-			printf("\n%s", linea);
+			free_strv(vector_linea);
+			printf("%s\n", linea);
+			ok = true;	
 		}
-		
 		abb_iter_in_avanzar(iter);
 	}
 	
@@ -192,3 +205,4 @@ bool prioridad_vuelos(hash_t* hash, size_t cantidad_vuelos){
 	free(a_encolar);
 	return true;
 }
+
