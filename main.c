@@ -38,6 +38,7 @@ int main(int argc, char* argv[]){
 		
 		if(!hash_cantidad(hash))
 			break;
+		free_strv(vector_linea);
 	}
 	hash_destruir(hash);
 	abb_destruir(abb);
