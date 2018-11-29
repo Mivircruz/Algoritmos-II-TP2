@@ -33,6 +33,9 @@ bool comparar_fechas(char* fecha_inicio, char* fecha_fin){
 				return false;
 		}
 	}
+	free_strv(anio_mes_inicio);
+	free_strv(anio_mes_fin);
+	
 	return true;
 }
 
