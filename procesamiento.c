@@ -133,24 +133,33 @@ bool ver_informacion_vuelo(hash_t* hash, char* codigo_vuelo){
 
 bool prioridad_vuelos(hash_t* hash, size_t cantidad_vuelos){
 
+	if(!hash_cantidad(hash))
+		return false;
+	
 	heap_t* heap = heap_crear(comparar_prioridades);
+	if(!heap)
+		return NULL;
 	hash_iter_t* iter = hash_iter_crear(hash);
-	char* clave_hash;
+	if(!iter){
+		heap_destruir(heap, NULL);
+		return false;
+	}
+	if(cantidad_vuelos > hash_cantidad(hash))
+		cantidad_vuelos = hash_cantidad(hash);
 	char*** a_encolar = malloc(sizeof(char**)*cantidad_vuelos);
 	char** a_comparar;
 	char*** reemplazante;
 	long int i;
 
-	for(i = 0; i < cantidad_vuelos; i++){
-
-		clave_hash = (char*)hash_obtener(hash, hash_iter_ver_actual(iter));
-		a_encolar[i] = prioridad_y_clave(clave_hash);
+	for(i = 0; i < cantidad_vuelos && !hash_iter_al_final(iter); i++){
+ 
+		a_encolar[i] = prioridad_y_clave((char*)hash_obtener(hash, hash_iter_ver_actual(iter)));
 		heap_encolar(heap, &(a_encolar[i]));
 		hash_iter_avanzar(iter);
 	}
 	while(!hash_iter_al_final(iter)){
-		clave_hash = (char*)hash_obtener(hash, hash_iter_ver_actual(iter));
-		a_comparar = prioridad_y_clave(clave_hash);
+
+		a_comparar = prioridad_y_clave((char*)hash_obtener(hash, hash_iter_ver_actual(iter)));
 		if(comparar_prioridades(heap_ver_max(heap), (void**)&a_comparar) > 0){
 			reemplazante = heap_desencolar(heap);
 			free(**reemplazante);
@@ -165,6 +174,7 @@ bool prioridad_vuelos(hash_t* hash, size_t cantidad_vuelos){
 		a_encolar[i] = *(char***)heap_desencolar(heap);
 	for(i = cantidad_vuelos-1; 0 <= i; i--)
 		printf("%s - %s\n", *(a_encolar[i]), a_encolar[i][1]);
+
 	heap_destruir(heap, destruir_prioridad_y_clave);
 	free(a_encolar);
 	return true;
