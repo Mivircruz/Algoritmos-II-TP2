@@ -30,7 +30,6 @@ int comparar_prioridades(const void* a, const void* b){
 		return -1;
 	if(prioridad1 < prioridad2)
 		return 1;
-	printf("prioridad 1 = %li, prioridad 2 = %li\n",prioridad1, prioridad2 );
 	return 0;
 }
 
@@ -43,6 +42,12 @@ char** prioridad_y_clave(char* linea){
 	return a_devolver;
 }
 
+void destruir_prioridad_y_clave(void* a){
+	char*** aux = (char***)a;
+	free(**aux);
+	free((*aux)[1]);
+	free(*aux);
+}
 
 /* ******************************************************************
  *                        FUNCIONES PRINCIPALES
@@ -131,28 +136,36 @@ bool prioridad_vuelos(hash_t* hash, size_t cantidad_vuelos){
 	heap_t* heap = heap_crear(comparar_prioridades);
 	hash_iter_t* iter = hash_iter_crear(hash);
 	char* clave_hash;
-	char** clave_heap;
+	char*** a_encolar = malloc(sizeof(char**)*cantidad_vuelos);
+	char** a_comparar;
+	char*** reemplazante;
+	long int i;
 
-	for(size_t i = 0; i < cantidad_vuelos; i++){
+	for(i = 0; i < cantidad_vuelos; i++){
 
 		clave_hash = (char*)hash_obtener(hash, hash_iter_ver_actual(iter));
-		clave_heap = prioridad_y_clave(clave_hash);
-		heap_encolar(heap, &clave_heap);
+		a_encolar[i] = prioridad_y_clave(clave_hash);
+		heap_encolar(heap, &(a_encolar[i]));
 		hash_iter_avanzar(iter);
 	}
 	while(!hash_iter_al_final(iter)){
 		clave_hash = (char*)hash_obtener(hash, hash_iter_ver_actual(iter));
-		clave_heap = prioridad_y_clave(clave_hash);
-		if(comparar_prioridades(heap_ver_max(heap), (void**)&clave_heap) < 0){
-			heap_desencolar(heap);
-			heap_encolar(heap, &(clave_heap));
+		a_comparar = prioridad_y_clave(clave_hash);
+		if(comparar_prioridades(heap_ver_max(heap), (void**)&a_comparar) > 0){
+			reemplazante = heap_desencolar(heap);
+			free(**reemplazante);
+			free((*reemplazante)[1]);
+			**reemplazante = *a_comparar;
+			(*reemplazante)[1] = a_comparar[1];
+			heap_encolar(heap, reemplazante);
 		}
 		hash_iter_avanzar(iter);
 	}
-	while(!heap_esta_vacio(heap)){
-		clave_heap = *(char***)heap_desencolar(heap);
-		printf("%s - %s\n",*clave_heap, clave_heap[1]);
-	}
-	heap_destruir(heap, free);
+	for(i = 0; !heap_esta_vacio(heap); i++)
+		a_encolar[i] = *(char***)heap_desencolar(heap);
+	for(i = cantidad_vuelos-1; 0 <= i; i--)
+		printf("%s - %s\n", *(a_encolar[i]), a_encolar[i][1]);
+	heap_destruir(heap, destruir_prioridad_y_clave);
+	free(a_encolar);
 	return true;
 }
