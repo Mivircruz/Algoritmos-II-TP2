@@ -1,7 +1,8 @@
- #define _GNU_SOURCE
+#define _GNU_SOURCE
 
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include <string.h>
 #include "comandos.h"
 #include "strutil.h"
@@ -39,7 +40,9 @@ int main(int argc, char* argv[]){
 		if(!hash_cantidad(hash))
 			break;
 	}
+	free(linea);
 	hash_destruir(hash);
 	abb_destruir(abb);
 	return 0;
 }
+
