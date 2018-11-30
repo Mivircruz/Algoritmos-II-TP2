@@ -80,10 +80,11 @@ bool agregar_archivo(char* nombre_archivo, hash_t* hash, abb_t* abb){
 		char* vuelo = join(info_vuelo, ' ');
 		
 		hash_guardar(hash, info_vuelo[POS_NUMERO_VUELO], vuelo);
-		abb_guardar(abb, info_vuelo[POS_FECHA_VUELO], info_vuelo[POS_NUMERO_VUELO]);
+		abb_guardar(abb, info_vuelo[POS_FECHA_VUELO], strdup(info_vuelo[POS_NUMERO_VUELO]));
 	}
 	free(linea);
 	fclose(archivo);
+	free_strv(info_vuelo);
 	return true;
 }
 
@@ -202,6 +203,7 @@ bool prioridad_vuelos(hash_t* hash, size_t cantidad_vuelos){
 		printf("%s - %s\n", *(a_imprimir[i]), a_imprimir[i][1]);
 
 	heap_destruir(heap, destruir_prioridad_y_clave);
+	hash_iter_destruir(iter);
 	free(a_encolar);
 	free(a_imprimir);
 	return true;
