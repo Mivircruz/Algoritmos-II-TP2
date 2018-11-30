@@ -19,8 +19,6 @@ void liberar_vectores(char** v1, char** v2, char** v3, char** v4){
 	free_strv(v4);
 }
 
-//Compara las fechas de inicio y fin. 
-//Devuelve true en caso de que la fecha de inicio sea menor que la de fin, false en caso contrario.
 bool comparar_fechas(char* fecha_inicio, char* fecha_fin){
 
 	char** anio_mes_inicio = split(fecha_inicio,'-');
