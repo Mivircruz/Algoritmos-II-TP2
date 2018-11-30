@@ -81,10 +81,11 @@ bool agregar_archivo(char* nombre_archivo, hash_t* hash, abb_t* abb){
 		
 		hash_guardar(hash, info_vuelo[POS_NUMERO_VUELO], vuelo);
 		abb_guardar(abb, info_vuelo[POS_FECHA_VUELO], vuelo);
+		free_strv(info_vuelo);
 	}
+	
 	free(linea);
 	fclose(archivo);
-	free_strv(info_vuelo);
 	return true;
 }
 
