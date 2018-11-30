@@ -98,10 +98,11 @@ bool ver_tablero(abb_t* abb, size_t cantidad_vuelos, char* fecha_desde, char* fe
 	for(i = 0; k<cantidad_vuelos && !abb_iter_in_al_final(iter); i++){
 		const char* clave = abb_iter_in_ver_actual(iter);
 		if(strcmp(clave, fecha_desde)>0 && strcmp(clave, fecha_hasta)<0){
-			
-			datos[k] = fecha_y_clave(clave, (char*)abb_obtener(abb, clave));
+			char* linea = (char*)abb_obtener(abb, clave);
+			char** vector = split(linea, ' ');
+			datos[k] = fecha_y_clave(clave, vector[POS_NUMERO_VUELO]);
 			k++;
-			
+			free_strv(vector);
 		}
 		abb_iter_in_avanzar(iter);
 	}
