@@ -10,32 +10,46 @@
 #include "abb.h"
 #include "strutil.h"
 
+
+
+void liberar_vectores(char** v1, char** v2, char** v3, char** v4){
+	free_strv(v1);
+	free_strv(v2);
+	free_strv(v3);
+	free_strv(v4);
+}
+
 //Compara las fechas de inicio y fin. 
 //Devuelve true en caso de que la fecha de inicio sea menor que la de fin, false en caso contrario.
-
 bool comparar_fechas(char* fecha_inicio, char* fecha_fin){
 
 	char** anio_mes_inicio = split(fecha_inicio,'-');
 	char** anio_mes_fin = split(fecha_fin, '-');
-
+	char** dia_inicio = split(anio_mes_inicio[2], 'T');
+	char** dia_fin = split(anio_mes_fin[2], 'T');
+	
 	char* ptr;
 	
-	if(strtol(anio_mes_fin[0],&ptr, 10) < strtol(anio_mes_inicio[0],&ptr, 10))
+	if(strtol(anio_mes_fin[0],&ptr, 10) < strtol(anio_mes_inicio[0],&ptr, 10)){
+		liberar_vectores(anio_mes_inicio, anio_mes_fin, dia_inicio, dia_fin);
 		return false;
+	}
 	if(strtol(anio_mes_fin[0],&ptr, 10) == strtol(anio_mes_inicio[0],&ptr, 10)){
-		if(strtol(anio_mes_fin[1],&ptr, 10) < strtol(anio_mes_inicio[1],&ptr, 10))
+		if(strtol(anio_mes_fin[1],&ptr, 10) < strtol(anio_mes_inicio[1],&ptr, 10)){
+			liberar_vectores(anio_mes_inicio, anio_mes_fin, dia_inicio, dia_fin);
 			return false;
+		}
 			
 		if(strtol(anio_mes_fin[1],&ptr, 10) == strtol(anio_mes_inicio[1],&ptr, 10)){	
-			char** dia_inicio = split(anio_mes_inicio[2], 'T');
-			char** dia_fin = split(anio_mes_fin[2], 'T');
-			if(strtol(*dia_fin,&ptr, 10) < strtol(*dia_inicio,&ptr, 10))
+		
+			if(strtol(*dia_fin,&ptr, 10) < strtol(*dia_inicio,&ptr, 10)){
+				liberar_vectores(anio_mes_inicio, anio_mes_fin, dia_inicio, dia_fin);
 				return false;
+			}
 		}
 	}
-	free_strv(anio_mes_inicio);
-	free_strv(anio_mes_fin);
-	
+	liberar_vectores(anio_mes_inicio, anio_mes_fin, dia_inicio, dia_fin);
+
 	return true;
 }
 
