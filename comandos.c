@@ -61,6 +61,20 @@ bool vuelo_valido(char* linea, long int* vuelos){
 	return true;
 }
 
+int cantidad_parametros(char* linea){
+	
+	char** vector = split(linea, ' ');
+	int contador = 0, i = 0;
+	
+	while(vector[i] != NULL){
+		contador++;
+		i++;
+	}
+		
+	free_strv(vector);
+	return contador;
+}
+
 //Elimina el salto de línea para procesar las líneas
 
 void quitar_salto_linea(char* linea){
@@ -76,7 +90,7 @@ void quitar_salto_en_arreglo(char** arreglo){
 		quitar_salto_linea(arreglo[i]);
 }
 
-bool ejecutar_comandos(char* linea[], hash_t* hash, abb_t* abb, char** comando){
+bool ejecutar_comandos(char* linea[], char* linea_, hash_t* hash, abb_t* abb, char** comando){
 
 	//Declaración de variables auxiliares e inicialización
 
@@ -87,6 +101,9 @@ bool ejecutar_comandos(char* linea[], hash_t* hash, abb_t* abb, char** comando){
 
 	if(!strcmp(*linea, CMD_AGREGAR_ARCHIVO)){
 		*comando = strdup(CMD_AGREGAR_ARCHIVO);
+		if(cantidad_parametros(linea_) != 2)
+			return false;
+			
 		return agregar_archivo(linea[CMD_POS_ARCHIVO], hash, abb);
 	}
 
@@ -94,7 +111,9 @@ bool ejecutar_comandos(char* linea[], hash_t* hash, abb_t* abb, char** comando){
 		*comando = strdup(CMD_BORRAR_VUELOS);
 		if(!comparar_fechas(linea[CMD_FECHA_BORRAR_INICIO], linea[CMD_FECHA_BORRAR_FIN]))
 			return false;
-		
+		if(cantidad_parametros(linea_) != 3)
+			return false;
+			
 		return borrar(abb, hash, linea[CMD_FECHA_BORRAR_INICIO], linea[CMD_FECHA_BORRAR_FIN]);
 	}
 
@@ -104,18 +123,26 @@ bool ejecutar_comandos(char* linea[], hash_t* hash, abb_t* abb, char** comando){
 			return false;
 		if(strcmp(linea[CMD_POS_MODO], MODO_ASCENDENTE) && strcmp(linea[CMD_POS_MODO],MODO_DESCENDENTE))
 			return false;
-		
+		if(cantidad_parametros(linea_) != 5)
+			return false;
+			
 		return ver_tablero(abb, vuelos, linea[CMD_FECHA_VT_INICIO], linea[CMD_FECHA_VT_FIN], linea[CMD_POS_MODO]);
 	}
 
 	if(!strcmp(*linea, CMD_INFO_VUELO)){
 		*comando = strdup(CMD_INFO_VUELO);
+		if(cantidad_parametros(linea_) != 2)
+			return false;
+			
 		return ver_informacion_vuelo(hash, linea[CMD_POS_CODIGO_VUELO]);
 	}
 	if(!strcmp(*linea, CMD_PRIORIDAD_VUELOS)){
 		*comando = strdup(CMD_PRIORIDAD_VUELOS);
 		if(!vuelo_valido(linea[CMD_POS_PRIO_VUELO], &vuelos))
 			return false;
+		if(cantidad_parametros(linea_) != 2)
+			return false;
+			
 		return prioridad_vuelos(hash, vuelos);	
 	}
 	return false;
