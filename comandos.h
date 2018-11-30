@@ -39,4 +39,8 @@ bool vuelo_valido(char* linea, long int* vuelos);
 //Quita el '\n' de la línea
 void quitar_salto_en_arreglo(char** arreglo);
 
+//Compara las fechas de inicio y fin. 
+//Devuelve true en caso de que la fecha de inicio sea menor que la de fin, false en caso contrario.
+bool comparar_fechas(char* fecha_inicio, char* fecha_fin);
+
 #endif
