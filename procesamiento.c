@@ -137,8 +137,7 @@ bool borrar(abb_t* abb, hash_t* hash, char* fecha_desde, char* fecha_hasta){
 			char** vector_linea = split(linea, ' ');
 			hash_borrar(hash, vector_linea[POS_NUMERO_VUELO]);
 			free_strv(vector_linea);
-			printf("%s\n", linea);
-			ok = true;	
+			printf("%s\n", linea);	
 		}
 		abb_iter_in_avanzar(iter);
 	}
@@ -173,6 +172,7 @@ bool prioridad_vuelos(hash_t* hash, size_t cantidad_vuelos){
 	if(cantidad_vuelos > hash_cantidad(hash))
 		cantidad_vuelos = hash_cantidad(hash);
 	char*** a_encolar = malloc(sizeof(char**)*cantidad_vuelos);
+	char*** a_imprimir = malloc(sizeof(char**)*cantidad_vuelos);
 	char** a_comparar;
 	char*** reemplazante;
 	long int i;
@@ -197,12 +197,13 @@ bool prioridad_vuelos(hash_t* hash, size_t cantidad_vuelos){
 		hash_iter_avanzar(iter);
 	}
 	for(i = 0; !heap_esta_vacio(heap); i++)
-		a_encolar[i] = *(char***)heap_desencolar(heap);
+		a_imprimir[i] = *(char***)heap_desencolar(heap);
 	for(i = cantidad_vuelos-1; 0 <= i; i--)
-		printf("%s - %s\n", *(a_encolar[i]), a_encolar[i][1]);
+		printf("%s - %s\n", *(a_imprimir[i]), a_imprimir[i][1]);
 
 	heap_destruir(heap, destruir_prioridad_y_clave);
 	free(a_encolar);
+	free(a_imprimir);
 	return true;
 }
 
