@@ -16,8 +16,8 @@ int main(int argc, char* argv[]){
 	char* comando;
 	char* linea = NULL;
 	size_t capacidad = 0;
-	hash_t* hash = hash_crear(NULL);
-	abb_t* abb = abb_crear(strcmp, NULL);
+	hash_t* hash = hash_crear(free);
+	abb_t* abb = abb_crear(strcmp, free);
 	char** vector_linea;
 
 //Procesamiento de comandos
