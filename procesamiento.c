@@ -131,25 +131,31 @@ bool borrar(abb_t* abb, hash_t* hash, char* fecha_desde, char* fecha_hasta){
 	abb_iter_t* iter = abb_iter_in_crear(abb);
 	const char* clave;
 	char** vector_linea;
-	char* linea;
+	char** linea = malloc(sizeof(char*)*abb_cantidad(abb));
+	size_t i = 0;
 	
-	for(size_t i = 0; !abb_iter_in_al_final(iter); i++){
+	while(!abb_iter_in_al_final(iter)){
 
 		clave = abb_iter_in_ver_actual(iter);
 		if(comparar_fechas(fecha_desde, (char*)clave) && comparar_fechas((char*)clave, fecha_hasta)){
 			
-			linea = (char*)abb_borrar(abb, clave);
-			vector_linea = split(linea, ' ');
+			linea[i] = (char*)abb_obtener(abb, clave);
+			vector_linea = split(linea[i], ' ');
 			hash_borrar(hash, vector_linea[POS_NUMERO_VUELO]);
 			free_strv(vector_linea);
-			printf("%s\n", linea);
-			free(linea);	
+			printf("%s\n", linea[i]);	
+			i++;
 		}
 		abb_iter_in_avanzar(iter);
 	}
-	
+
 	abb_iter_in_destruir(iter);
-	
+
+	for(size_t j = 0; j < i; j++){
+		abb_borrar(abb,linea[j]);
+		
+	}
+	free(linea);
 	return true;
 }
 
