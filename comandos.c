@@ -68,7 +68,7 @@ bool ejecutar_comandos(char* linea[], char* linea_, hash_t* hash, abb_t* abb, ch
 
 	if(!strcmp(*linea, CMD_BORRAR_VUELOS)){
 		*comando = strdup(CMD_BORRAR_VUELOS);
-		if(!comparar_fechas(linea[CMD_FECHA_BORRAR_INICIO], linea[CMD_FECHA_BORRAR_FIN]))
+		if(comparar_fechas(linea[CMD_FECHA_BORRAR_INICIO], linea[CMD_FECHA_BORRAR_FIN]) < 0)
 			return false;
 		if(cantidad_parametros(linea_) != 3)
 			return false;
@@ -78,7 +78,7 @@ bool ejecutar_comandos(char* linea[], char* linea_, hash_t* hash, abb_t* abb, ch
 
 	if(!strcmp(*linea, CMD_VER_TABLERO)){
 		*comando = strdup(CMD_VER_TABLERO);
-		if(!cantidad_vuelos_valida(linea[CMD_POS_CANT_VUELOS], &vuelos) || !comparar_fechas(linea[CMD_FECHA_VT_INICIO], linea[CMD_FECHA_VT_FIN]))
+		if(!cantidad_vuelos_valida(linea[CMD_POS_CANT_VUELOS], &vuelos) || comparar_fechas(linea[CMD_FECHA_VT_INICIO], linea[CMD_FECHA_VT_FIN]) < 0)
 			return false;
 		if(strcmp(linea[CMD_POS_MODO], MODO_ASCENDENTE) && strcmp(linea[CMD_POS_MODO],MODO_DESCENDENTE))
 			return false;
