@@ -32,15 +32,7 @@
 //Valida los comandos pasados por parámetro y ejecuta la función correspondiente
 bool ejecutar_comandos(char* linea[], char* linea_, hash_t* hash, abb_t* abb,char** comando);
 
-//Si la cantidad de vuelos a imprimir es un número entero mayor a cero, devuelve true.
-//Devuelve false en caso contrario.
-bool vuelo_valido(char* linea, long int* vuelos);
-
-//Quita el '\n' de la línea
+//Quita el '\n' de cada línea en el arreglo pasado por parámetro
 void quitar_salto_en_arreglo(char** arreglo);
-
-//Compara las fechas de inicio y fin. 
-//Devuelve true en caso de que la fecha de inicio sea menor que la de fin, false en caso contrario.
-bool comparar_fechas(char* fecha_inicio, char* fecha_fin);
 
 #endif
