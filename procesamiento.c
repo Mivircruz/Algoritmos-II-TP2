@@ -9,55 +9,11 @@
 #include "procesamiento.h"
 #include "heap.h"
 #include "comandos.h"
+#include "vuelos.h"
 
 /* ******************************************************************
  *                        FUNCIONES AUXILIARES
  * *****************************************************************/
-
-//La función comparar_prioridades devuelve:
-//-1 si el primer entero es mayor al segundo.
-//1 si el primer elemento es menor al segundo.
-//0 en caso de ser iguales.
-
-int comparar_prioridades(const void* a, const void* b){
-
-	char* ptr;
-	char** vuelo1 = *(char***)a;
-	char**vuelo2 = *(char***)b;
-	long int prioridad1 = strtol(*vuelo1,&ptr,10);
-	long int prioridad2 = strtol(*vuelo2,&ptr,10);
-	if(prioridad1 > prioridad2)
-		return -1;
-	if(prioridad1 < prioridad2)
-		return 1;
-	return 0;
-}
-
-char** fecha_y_clave(const char* fecha, char* vuelo){
-	char** a_devolver = malloc(sizeof(char*) * 2);
-	*a_devolver = strdup(fecha);
-	a_devolver[1] = strdup(vuelo);
-	
-	return a_devolver;
-}
-
-char** prioridad_y_clave(char* linea){
-	char** a_devolver = malloc(sizeof(char*) * 2);
-	char** aux = split(linea, ' ');
-	*a_devolver = strdup(aux[POS_CSV_PRIO_VUELO]);
-	a_devolver[1] = strdup(aux[POS_NUMERO_VUELO]);
-	free_strv(aux);
-	return a_devolver;
-}
-
-void destruir_prioridad_y_clave(void* a){
-	char*** aux = (char***)a;
-	free(**aux);
-	free((*aux)[1]);
-	free(*aux);
-}
-
-
 
 /* ******************************************************************
  *                        FUNCIONES PRINCIPALES
@@ -90,6 +46,7 @@ bool agregar_archivo(char* nombre_archivo, hash_t* hash, abb_t* abb){
 }
 
 bool ver_tablero(abb_t* abb, size_t cantidad_vuelos, char* fecha_desde, char* fecha_hasta, char* modo){
+	
 	
 	abb_iter_t* iter = abb_iter_in_crear(abb);
 	int i, k = 0;
@@ -151,11 +108,9 @@ bool borrar(abb_t* abb, hash_t* hash, char* fecha_desde, char* fecha_hasta){
 	}
 
 	abb_iter_in_destruir(iter);
-
-	for(size_t j = 0; j < i; j++){
+	for(size_t j = 0; j < i; j++)
 		abb_borrar(abb,linea[j]);
-		
-	}
+
 	free(linea);
 	return true;
 }

@@ -2,6 +2,7 @@
 #define PROCESAMIENTO_H
 
 #define POS_NUMERO_VUELO		0
+#define POS_PRIORIDAD_VUELO		5
 #define POS_FECHA_VUELO			6
 
 //Procesa el archivo con formato csv y guarda la información de los vuelos.
