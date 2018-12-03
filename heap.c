@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include "heap.h"
 
-#define TAM_INICIAL 		30
+#define TAM_INICIAL 		200
 #define CAPACIDAD_MINIMA	13
 #define FACTOR_REDIMENSION 	2
 
