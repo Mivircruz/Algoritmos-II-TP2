@@ -9,9 +9,10 @@
 //Devuelve false en caso contrario.
 bool cantidad_vuelos_valida(char* linea, long int* vuelos);
 
-//Compara las fechas de inicio y fin. 
-//Devuelve true en caso de que la fecha de inicio sea menor que la de fin, false en caso contrario.
-bool comparar_fechas(char* fecha_inicio, char* fecha_fin);
+//Compara las fechas inicio y fin. 
+//Devuelve -1 en caso de que la fecha de inicio sea menor que la de fin, 1 en caso contrario.
+//En caso de tener la
+int comparar_fechas(const char* fecha_inicio, const char* fecha_fin);
 
 //La función comparar_prioridades devuelve:
 //-1 si la primera prioridad es mayor a la segunda.
