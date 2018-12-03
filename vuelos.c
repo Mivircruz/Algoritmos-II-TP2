@@ -19,7 +19,7 @@
  * *****************************************************************/
 
 //Libera la memoria pedida para comparar fechas en la función "comparar fechas"
-void liberar_vectores(char** v1, char** v2, char** v3, char** v4, char** v5, char** v6){
+void liberar_vectores(char** v1, char** v2, char** v3, char** v4){
 	
 	if(v1)
 		free_strv(v1);
@@ -29,10 +29,6 @@ void liberar_vectores(char** v1, char** v2, char** v3, char** v4, char** v5, cha
 		free_strv(v3);
 	if(v4)
 		free_strv(v4);
-	if(v5)
-		free_strv(v5);
-	if(v6)
-		free_strv(v6);
 }
 
 //Parsea las cadenas pasadas a enteros. Devuelve
@@ -63,11 +59,11 @@ bool comparar_fechas(char* fecha_inicio, char* fecha_fin){
 	char** anio_mes_inicio = split(fecha_inicio,'-');
 	char** anio_mes_fin = split(fecha_fin, '-');
 
-	int comparacion_anio, comparacion_mes, comparacion_dia, comparacion_hora, comparacion_min;
+	int comparacion_anio, comparacion_mes, comparacion_dia;
 	
 	comparacion_anio = comparar_cadenas_a_numeros(anio_mes_fin[POS_ANIO],anio_mes_inicio[POS_ANIO]);
 	if(comparacion_anio < 0){
-		liberar_vectores(anio_mes_inicio, anio_mes_fin, NULL, NULL, NULL, NULL);
+		liberar_vectores(anio_mes_inicio, anio_mes_fin, NULL, NULL);
 		return false;
 	}
 	if(!comparacion_anio){
@@ -77,7 +73,7 @@ bool comparar_fechas(char* fecha_inicio, char* fecha_fin){
 
 		comparacion_mes = comparar_cadenas_a_numeros(anio_mes_fin[POS_MES],anio_mes_inicio[POS_MES]);
 		if(comparacion_mes < 0){
-			liberar_vectores(anio_mes_inicio, anio_mes_fin, dia_inicio, dia_fin, NULL, NULL);
+			liberar_vectores(anio_mes_inicio, anio_mes_fin, dia_inicio, dia_fin);
 			return false;
 		}
 			
@@ -85,34 +81,13 @@ bool comparar_fechas(char* fecha_inicio, char* fecha_fin){
 		
 			comparacion_dia = comparar_cadenas_a_numeros(*dia_fin, *dia_inicio);
 			if(comparacion_dia < 0){
-				liberar_vectores(anio_mes_inicio, anio_mes_fin, dia_inicio, dia_fin, NULL, NULL);
+				liberar_vectores(anio_mes_inicio, anio_mes_fin, dia_inicio, dia_fin);
 				return false;
 			}
-
-			if(!comparacion_dia){
-
-				char** tiempo_inicio = split(dia_inicio[1],':');
-				char** tiempo_fin = split(dia_fin[1],':');
-
-				comparacion_hora = comparar_cadenas_a_numeros(tiempo_fin[POS_HORA], tiempo_inicio[POS_HORA]);
-				if(comparacion_hora < 0){
-					liberar_vectores(anio_mes_inicio, anio_mes_fin, dia_inicio, dia_fin, tiempo_inicio, tiempo_fin);
-					return false;
-				}
-
-				if(!comparacion_hora){
-					comparacion_min = comparar_cadenas_a_numeros(tiempo_fin[POS_MIN], tiempo_inicio[POS_MIN]);
-					if(comparacion_min < 0){
-						liberar_vectores(anio_mes_inicio, anio_mes_fin, dia_inicio, dia_fin, tiempo_inicio, tiempo_fin);
-						return false;
-					}
-				}
-				liberar_vectores(tiempo_inicio, tiempo_fin, NULL, NULL, NULL, NULL);
-			}
 		}
-		liberar_vectores(dia_inicio, dia_fin, NULL, NULL, NULL, NULL);
+		liberar_vectores(dia_inicio, dia_fin, NULL, NULL);
 	}
-	liberar_vectores(anio_mes_inicio, anio_mes_fin, NULL, NULL, NULL, NULL);
+	liberar_vectores(anio_mes_inicio, anio_mes_fin, NULL, NULL);
 	return true;
 }
 
