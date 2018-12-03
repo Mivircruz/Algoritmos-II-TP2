@@ -40,7 +40,7 @@ int comparar_cadenas_a_numeros(char* a, char* b){
 	char* ptr;
 
 	long int numero1 = strtol(a,&ptr, 10);
-	long int numero2 = strtol(a,&ptr, 10);
+	long int numero2 = strtol(b,&ptr, 10);
 
 	if(numero1 < numero2)
 		return -1;
@@ -54,7 +54,7 @@ int comparar_cadenas_a_numeros(char* a, char* b){
  *                        FUNCIONES PRINCIPALES
  * *****************************************************************/
 
-bool comparar_fechas(char* fecha_inicio, char* fecha_fin){
+int comparar_fechas(const char* fecha_inicio, const char* fecha_fin){
 
 	char** anio_mes_inicio = split(fecha_inicio,'-');
 	char** anio_mes_fin = split(fecha_fin, '-');
@@ -64,7 +64,7 @@ bool comparar_fechas(char* fecha_inicio, char* fecha_fin){
 	comparacion_anio = comparar_cadenas_a_numeros(anio_mes_fin[POS_ANIO],anio_mes_inicio[POS_ANIO]);
 	if(comparacion_anio < 0){
 		liberar_vectores(anio_mes_inicio, anio_mes_fin, NULL, NULL);
-		return false;
+		return -1;
 	}
 	if(!comparacion_anio){
 
@@ -74,7 +74,7 @@ bool comparar_fechas(char* fecha_inicio, char* fecha_fin){
 		comparacion_mes = comparar_cadenas_a_numeros(anio_mes_fin[POS_MES],anio_mes_inicio[POS_MES]);
 		if(comparacion_mes < 0){
 			liberar_vectores(anio_mes_inicio, anio_mes_fin, dia_inicio, dia_fin);
-			return false;
+			return -1;
 		}
 			
 		if(!comparacion_mes){	
@@ -82,13 +82,18 @@ bool comparar_fechas(char* fecha_inicio, char* fecha_fin){
 			comparacion_dia = comparar_cadenas_a_numeros(*dia_fin, *dia_inicio);
 			if(comparacion_dia < 0){
 				liberar_vectores(anio_mes_inicio, anio_mes_fin, dia_inicio, dia_fin);
-				return false;
+				return -1;
+			}
+			if(!comparacion_dia){
+				liberar_vectores(anio_mes_inicio, anio_mes_fin, dia_inicio, dia_fin);
+				return 0;
 			}
 		}
+
 		liberar_vectores(dia_inicio, dia_fin, NULL, NULL);
 	}
 	liberar_vectores(anio_mes_inicio, anio_mes_fin, NULL, NULL);
-	return true;
+	return 1;
 }
 
 bool cantidad_vuelos_valida(char* linea, long int* vuelos){
