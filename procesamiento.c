@@ -12,10 +12,6 @@
 #include "vuelos.h"
 
 /* ******************************************************************
- *                        FUNCIONES AUXILIARES
- * *****************************************************************/
-
-/* ******************************************************************
  *                        FUNCIONES PRINCIPALES
  * *****************************************************************/
 
@@ -49,14 +45,18 @@ bool ver_tablero(abb_t* abb, size_t cantidad_vuelos, char* fecha_desde, char* fe
 	
 	
 	abb_iter_t* iter = abb_iter_in_crear(abb);
-	int i, k = 0;
+	long int i, k = 0;
 	char** datos[cantidad_vuelos];
+	char* linea;
+	char** vector;
 	
 	for(i = 0; k<cantidad_vuelos && !abb_iter_in_al_final(iter); i++){
+
 		const char* clave = abb_iter_in_ver_actual(iter);
-		if(strcmp(clave, fecha_desde)>0 && strcmp(clave, fecha_hasta)<0){
-			char* linea = (char*)abb_obtener(abb, clave);
-			char** vector = split(linea, ' ');
+		if(comparar_fechas((char*)clave, fecha_desde)>0 && comparar_fechas((char*)clave, fecha_hasta)<0){
+			printf("welnge\n");
+			linea = (char*)abb_obtener(abb, clave);
+			vector = split(linea, ' ');
 			datos[k] = fecha_y_clave(clave, vector[POS_NUMERO_VUELO]);
 			k++;
 			free_strv(vector);
@@ -64,15 +64,15 @@ bool ver_tablero(abb_t* abb, size_t cantidad_vuelos, char* fecha_desde, char* fe
 		abb_iter_in_avanzar(iter);
 	}
 	
-	if(strcmp(modo, MODO_ASCENDENTE) == 0){
-		for(i = 0; i < k; i++){
+	if(!strcmp(modo, MODO_ASCENDENTE)){
+		for(i = k-1; 0 <= i; i--){
 		printf("%s - %s\n", *(datos[i]), datos[i][1]);
 		free(*(datos[i]));
 		free(datos[i][1]);
 		}
 	}
 	else{
-		for(i = k-1; 0 <= i; i--){
+		for(i = 0; i < k; i++){
 		printf("%s - %s\n", *(datos[i]), datos[i][1]);
 		free(*(datos[i]));
 		free(datos[i][1]);
@@ -95,7 +95,7 @@ bool borrar(abb_t* abb, hash_t* hash, char* fecha_desde, char* fecha_hasta){
 	while(!abb_iter_in_al_final(iter)){
 
 		clave = abb_iter_in_ver_actual(iter);
-		if(comparar_fechas(fecha_desde, (char*)clave) && comparar_fechas((char*)clave, fecha_hasta)){
+		if(comparar_fechas(fecha_desde, clave)>0 && comparar_fechas(fecha_hasta,clave)<0){
 			
 			linea[i] = (char*)abb_obtener(abb, clave);
 			vector_linea = split(linea[i], ' ');
