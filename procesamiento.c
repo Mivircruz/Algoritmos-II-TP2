@@ -85,11 +85,12 @@ bool ver_tablero(abb_t* abb, size_t cantidad_vuelos, char* fecha_desde, char* fe
 }
 
 bool borrar(abb_t* abb, hash_t* hash, char* fecha_desde, char* fecha_hasta){
-	
+
 	abb_iter_t* iter = abb_iter_in_crear(abb);
 	const char* clave;
 	char** vector_linea;
 	char** linea = malloc(sizeof(char*)*abb_cantidad(abb));
+	const char** abb_claves = malloc(sizeof(const char*)*abb_cantidad(abb));
 	size_t i = 0;
 	
 	while(!abb_iter_in_al_final(iter)){
@@ -101,17 +102,23 @@ bool borrar(abb_t* abb, hash_t* hash, char* fecha_desde, char* fecha_hasta){
 			vector_linea = split(linea[i], ' ');
 			hash_borrar(hash, vector_linea[POS_NUMERO_VUELO]);
 			free_strv(vector_linea);
-			printf("%s\n", linea[i]);	
+			printf("%s\n", linea[i]);
+			abb_claves[i] = clave;	
 			i++;
 		}
 		abb_iter_in_avanzar(iter);
 	}
 
 	abb_iter_in_destruir(iter);
-	for(size_t j = 0; j < i; j++)
-		abb_borrar(abb,linea[j]);
 
+	for(size_t j = 0; j < i; j++){
+		printf("%s\n", abb_claves[j]);
+		abb_borrar(abb,abb_claves[j]);
+	}
+
+	printf("FIN abb = %zu, hash = %zu\n", abb_cantidad(abb), hash_cantidad(hash));
 	free(linea);
+	free(abb_claves);
 	return true;
 }
 
