@@ -92,6 +92,11 @@ const char* abb_iter_in_ver_actual(const abb_iter_t* iter);
 //Pre: el iterador fue creado.
 bool abb_iter_in_al_final(const abb_iter_t* iter);
 
+//Itera el abb hasta encontrar la clave pasada por parámetro y la devuelve.
+//En caso no encontrar la clave, devuelve NULL
+//Pre: el iterador fue creado.
+const char* abb_iter_in_buscar_clave(abb_iter_t* iter, const char* desde);
+
 //Destruye el iterador.
 //Pre: el iterador fue creado.
 //Pos: se liberó la memoria pedida para el iterador.
