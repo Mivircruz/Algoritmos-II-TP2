@@ -29,15 +29,60 @@ bool agregar_archivo(char* nombre_archivo, hash_t* hash, abb_t* abb){
 
 		info_vuelo = split(linea, ',');
 		quitar_salto_en_arreglo(info_vuelo);
-		char* vuelo = join(info_vuelo, ' ');
+		char* datos_vuelo_a_guardar = join(info_vuelo, ' ');
 		
-		hash_guardar(hash, info_vuelo[POS_NUMERO_VUELO], vuelo);
-		abb_guardar(abb, info_vuelo[POS_FECHA_VUELO], vuelo);
+		hash_guardar(hash, info_vuelo[POS_NUMERO_VUELO], datos_vuelo_a_guardar);
+		abb_guardar(abb, info_vuelo[POS_FECHA_VUELO], datos_vuelo_a_guardar);
 		free_strv(info_vuelo);
 	}
-	
+
 	free(linea);
 	fclose(archivo);
+	return true;
+}
+
+bool borrar(abb_t* abb, hash_t* hash, char* fecha_desde, char* fecha_hasta){
+
+	abb_iter_t* iter = abb_iter_in_crear(abb);
+	const char* clave;
+	char* a_imprimir;
+	char** vector_linea;
+	char** abb_claves = malloc(sizeof(char*)*abb_cantidad(abb));
+	lista_t* datos_vuelo = lista_crear();
+	size_t i = 0;
+	lista_iter_t* lista_iter;
+	
+	clave = abb_iter_in_buscar_clave(iter, fecha_desde);
+
+	while(comparar_fechas(fecha_hasta, clave) > 0){
+
+		abb_claves[i] = strdup(clave);	
+		datos_vuelo = abb_obtener(abb, clave);
+		while(lista_largo(datos_vuelo)){
+
+			lista_iter = lista_iter_crear(datos_vuelo);
+			a_imprimir = lista_iter_borrar(lista_iter);
+			printf("%s\n", a_imprimir);
+			vector_linea = split(a_imprimir, ' ');
+			hash_borrar(hash, vector_linea[POS_NUMERO_VUELO]);
+			free_strv(vector_linea);
+			free(a_imprimir);
+			lista_iter_destruir(lista_iter);
+		}
+		i++;
+
+		abb_iter_in_avanzar(iter);
+		clave = abb_iter_in_ver_actual(iter);
+	}
+
+	abb_iter_in_destruir(iter);
+
+	for(size_t j = 0; j < i; j++){
+		abb_borrar(abb,abb_claves[j]);
+		free(abb_claves[j]);
+	}
+
+	free(abb_claves);
 	return true;
 }
 
@@ -53,7 +98,7 @@ bool ver_tablero(abb_t* abb, size_t cantidad_vuelos, char* fecha_desde, char* fe
 	for(i = 0; k<cantidad_vuelos && !abb_iter_in_al_final(iter); i++){
 
 		const char* clave = abb_iter_in_ver_actual(iter);
-		if(comparar_fechas(fecha_desde, clave)>0 && comparar_fechas(fecha_hasta,clave)<0){
+		if(comparar_fechas(fecha_desde, clave)<0 && comparar_fechas(fecha_hasta,clave)>0){
 			linea = (char*)abb_obtener(abb, clave);
 			vector = split(linea, ' ');
 			datos[k] = fecha_y_clave(clave, vector[POS_NUMERO_VUELO]);
@@ -80,44 +125,6 @@ bool ver_tablero(abb_t* abb, size_t cantidad_vuelos, char* fecha_desde, char* fe
 	
 	abb_iter_in_destruir(iter);
 	
-	return true;
-}
-
-bool borrar(abb_t* abb, hash_t* hash, char* fecha_desde, char* fecha_hasta){
-
-	abb_iter_t* iter = abb_iter_in_crear(abb);
-	const char* clave;
-	char** vector_linea;
-	char** linea = malloc(sizeof(char*)*abb_cantidad(abb));
-	char** abb_claves = malloc(sizeof(char*)*abb_cantidad(abb));
-	size_t i = 0;
-	
-	while(!abb_iter_in_al_final(iter)){
-
-		clave = abb_iter_in_ver_actual(iter);
-
-		if(comparar_fechas(fecha_desde, clave)>0 && comparar_fechas(fecha_hasta,clave)<0){
-			
-			abb_claves[i] = strdup(clave);	
-			linea[i] = (char*)abb_obtener(abb, clave);
-			vector_linea = split(linea[i], ' ');
-			hash_borrar(hash, vector_linea[POS_NUMERO_VUELO]);
-			free_strv(vector_linea);
-			printf("%s\n", linea[i]);
-			i++;
-		}
-		abb_iter_in_avanzar(iter);
-	}
-
-	abb_iter_in_destruir(iter);
-
-	for(size_t j = 0; j < i; j++){
-		abb_borrar(abb,abb_claves[j]);
-		free(abb_claves[j]);
-	}
-
-	free(linea);
-	free(abb_claves);
 	return true;
 }
 
