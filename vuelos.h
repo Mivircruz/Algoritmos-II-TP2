@@ -15,8 +15,8 @@ bool cantidad_vuelos_valida(char* linea, long int* vuelos);
 int comparar_fechas(const char* fecha_inicio, const char* fecha_fin);
 
 //La función comparar_prioridades devuelve:
-//-1 si la primera prioridad es mayor a la segunda.
-//1 si la primera prioridad es menor a la segunda.
+//1 si la primera prioridad es mayor a la segunda.
+//-1 si la primera prioridad es menor a la segunda.
 //0 en caso de ser iguales.
 int comparar_prioridades(const void* a, const void* b);
 
