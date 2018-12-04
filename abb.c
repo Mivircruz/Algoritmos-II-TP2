@@ -31,6 +31,7 @@ struct abb{
 struct abb_iter{
 
 	pila_t* pila;
+	abb_comparar_clave_t comparar_clave;
 };
 
 /* ******************************************************************
@@ -192,8 +193,8 @@ bool abb_guardar(abb_t *abb, const char *clave, void *dato){
 	 	}
 	 	abb->cantidad++;
 	 }
-	 	else
-	 		lista_insertar_ultimo(nodo_misma_clave->lista, dato);
+	else
+	 	lista_insertar_ultimo(nodo_misma_clave->lista, dato);
 	 	
 	free(extra);
 	return true;
@@ -318,6 +319,7 @@ abb_iter_t *abb_iter_in_crear(const abb_t* arbol){
 	if(!iter)
 		return NULL;
 
+	iter->comparar_clave = arbol->comparar_clave;
 	iter->pila = pila_crear();
 	if(arbol->raiz)
 		apilar_hijos_izquierdos(iter->pila, arbol->raiz);
@@ -349,6 +351,15 @@ const char* abb_iter_in_ver_actual(const abb_iter_t* iter){
 bool abb_iter_in_al_final(const abb_iter_t* iter){
 
 	return pila_esta_vacia(iter->pila);
+}
+
+const char* abb_iter_in_buscar_clave(abb_iter_t* iter, const char* desde){
+
+	while(!abb_iter_in_al_final(iter) && iter->comparar_clave(abb_iter_in_ver_actual(iter), desde) <= 0){
+		printf("%s\n", abb_iter_in_ver_actual(iter));
+		abb_iter_in_avanzar(iter);
+	}
+	return (abb_iter_in_al_final(iter)) ? NULL : abb_iter_in_ver_actual(iter);
 }
 
 void abb_iter_in_destruir(abb_iter_t* iter){
