@@ -2,9 +2,9 @@ CC = gcc
 CFLAGS = -g -std=c99 -Wall -Wtype-limits -pedantic -Wconversion -Wno-sign-conversion 
 VFLAGS = --leak-check=full --track-origins=yes --show-reachable=yes
 
-CFILES = main.c comandos.c strutil.c procesamiento.c vuelos.c abb.c hash.c heap.c pila.c
+CFILES = main.c comandos.c strutil.c procesamiento.c vuelos.c abb.c lista.c hash.c heap.c pila.c
 
-HFILES = comandos.h strutil.h procesamiento.h vuelos.h abb.h hash.h heap.h pila.h
+HFILES = comandos.h strutil.h procesamiento.h vuelos.h abb.h lista.h hash.h heap.h pila.h
 EXEC = pruebas
 
 build: $(CFILES) 
