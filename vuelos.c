@@ -64,7 +64,7 @@ int comparar_fechas(const char* fecha_inicio, const char* fecha_fin){
 	comparacion_anio = comparar_cadenas_a_numeros(anio_mes_fin[POS_ANIO],anio_mes_inicio[POS_ANIO]);
 	if(comparacion_anio < 0){
 		liberar_vectores(anio_mes_inicio, anio_mes_fin, NULL, NULL);
-		return -1;
+		return 1;
 	}
 	if(!comparacion_anio){
 
@@ -74,7 +74,7 @@ int comparar_fechas(const char* fecha_inicio, const char* fecha_fin){
 		comparacion_mes = comparar_cadenas_a_numeros(anio_mes_fin[POS_MES],anio_mes_inicio[POS_MES]);
 		if(comparacion_mes < 0){
 			liberar_vectores(anio_mes_inicio, anio_mes_fin, dia_inicio, dia_fin);
-			return -1;
+			return 1;
 		}
 			
 		if(!comparacion_mes){	
@@ -82,7 +82,7 @@ int comparar_fechas(const char* fecha_inicio, const char* fecha_fin){
 			comparacion_dia = comparar_cadenas_a_numeros(*dia_fin, *dia_inicio);
 			if(comparacion_dia < 0){
 				liberar_vectores(anio_mes_inicio, anio_mes_fin, dia_inicio, dia_fin);
-				return -1;
+				return 1;
 			}
 			if(!comparacion_dia){
 				liberar_vectores(anio_mes_inicio, anio_mes_fin, dia_inicio, dia_fin);
@@ -93,7 +93,7 @@ int comparar_fechas(const char* fecha_inicio, const char* fecha_fin){
 		liberar_vectores(dia_inicio, dia_fin, NULL, NULL);
 	}
 	liberar_vectores(anio_mes_inicio, anio_mes_fin, NULL, NULL);
-	return 1;
+	return -1;
 }
 
 bool cantidad_vuelos_valida(char* linea, long int* vuelos){
