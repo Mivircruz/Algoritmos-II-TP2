@@ -119,7 +119,7 @@ bool ver_tablero(abb_t* abb, size_t cantidad_vuelos, char* fecha_desde, char* fe
 		
 	}
 	
-	if(!strcmp(modo, MODO_ASCENDENTE)){
+	if(strcmp(modo, MODO_ASCENDENTE)){
 		for(i = k-1; 0 <= i; i--){
 		printf("%s - %s\n", *(datos[i]), datos[i][1]);
 		free(*(datos[i]));
