@@ -47,16 +47,16 @@ bool borrar(abb_t* abb, hash_t* hash, char* fecha_desde, char* fecha_hasta){
 	const char* clave;
 	char* a_imprimir;
 	char** vector_linea;
-	char** abb_claves = malloc(sizeof(char*)*abb_cantidad(abb));
-	lista_t* datos_vuelo = lista_crear();
+	char* abb_claves[abb_cantidad(abb)];
+	lista_t* datos_vuelo;
 	size_t i = 0;
 	lista_iter_t* lista_iter;
 	
 	clave = abb_iter_in_buscar_clave(iter, fecha_desde);
 
-	while(comparar_fechas(fecha_hasta, clave) > 0){
+	while(clave && comparar_fechas(fecha_hasta, clave) > 0){
 
-		abb_claves[i] = strdup(clave);	
+		abb_claves[i] = strdup(clave);
 		datos_vuelo = abb_obtener(abb, clave);
 		while(lista_largo(datos_vuelo)){
 
@@ -73,16 +73,16 @@ bool borrar(abb_t* abb, hash_t* hash, char* fecha_desde, char* fecha_hasta){
 
 		abb_iter_in_avanzar(iter);
 		clave = abb_iter_in_ver_actual(iter);
+		lista_destruir(datos_vuelo, NULL);
 	}
 
 	abb_iter_in_destruir(iter);
-
+	
 	for(size_t j = 0; j < i; j++){
 		abb_borrar(abb,abb_claves[j]);
 		free(abb_claves[j]);
 	}
 
-	free(abb_claves);
 	return true;
 }
 
@@ -94,18 +94,29 @@ bool ver_tablero(abb_t* abb, size_t cantidad_vuelos, char* fecha_desde, char* fe
 	char** datos[cantidad_vuelos];
 	char* linea;
 	char** vector;
+	lista_t* datos_vuelo;
+	lista_iter_t* lista_iter;
+	const char* clave;
 	
-	for(i = 0; k<cantidad_vuelos && !abb_iter_in_al_final(iter); i++){
-
-		const char* clave = abb_iter_in_ver_actual(iter);
-		if(comparar_fechas(fecha_desde, clave)<0 && comparar_fechas(fecha_hasta,clave)>0){
-			linea = (char*)abb_obtener(abb, clave);
+	clave = abb_iter_in_buscar_clave(iter, fecha_desde);
+	
+	while(clave && comparar_fechas(fecha_hasta, clave)>0 && k<cantidad_vuelos){
+		
+		datos_vuelo = abb_obtener(abb, clave);
+		lista_iter = lista_iter_crear(datos_vuelo);
+		while(!lista_iter_al_final(lista_iter)){
+			
+			linea = (char*)lista_iter_ver_actual(lista_iter);
 			vector = split(linea, ' ');
 			datos[k] = fecha_y_clave(clave, vector[POS_NUMERO_VUELO]);
 			k++;
 			free_strv(vector);
+			lista_iter_avanzar(lista_iter);
 		}
+		lista_iter_destruir(lista_iter);
 		abb_iter_in_avanzar(iter);
+		clave = abb_iter_in_ver_actual(iter);
+		
 	}
 	
 	if(!strcmp(modo, MODO_ASCENDENTE)){
