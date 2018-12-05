@@ -124,6 +124,7 @@ bool ver_tablero(abb_t* abb, size_t cantidad_vuelos, char* fecha_desde, char* fe
 		printf("%s - %s\n", *(datos[i]), datos[i][1]);
 		free(*(datos[i]));
 		free(datos[i][1]);
+		free(datos[i]);
 		}
 	}
 	else{
@@ -131,6 +132,7 @@ bool ver_tablero(abb_t* abb, size_t cantidad_vuelos, char* fecha_desde, char* fe
 		printf("%s - %s\n", *(datos[i]), datos[i][1]);
 		free(*(datos[i]));
 		free(datos[i][1]);
+		free(datos[i]);
 		}
 	}
 	
@@ -199,4 +201,5 @@ bool prioridad_vuelos(hash_t* hash, size_t cantidad_vuelos){
 	free(a_imprimir);
 	return true;
 }
+
 
