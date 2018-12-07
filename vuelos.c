@@ -166,6 +166,18 @@ char** fecha_y_clave(const char* fecha, char* vuelo){
 	return a_devolver;
 }
 
+void swap_datos_vuelo(char*** x, char*** y) {
+
+	char** aux;
+
+	if(*x == *y)
+		return;
+
+	aux = *x;
+	*x = *y;
+	*y = aux;
+}
+
 char** prioridad_y_clave(char* linea){
 	char** a_devolver = malloc(sizeof(char*) * 2);
 	char** aux = split(linea, ' ');
