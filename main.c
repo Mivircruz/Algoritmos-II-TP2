@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "comandos.h"
+#include "vuelos.h"
 #include "strutil.h"
 #include "hash.h"
 #include "abb.h"
@@ -18,7 +19,7 @@ int main(int argc, char* argv[]){
 	char* linea = NULL;
 	size_t capacidad = 0;
 	hash_t* hash = hash_crear(NULL);
-	abb_t* abb = abb_crear(strcmp, free);
+	abb_t* abb = abb_crear(comparar_fechas, free);
 	char** vector_linea;
 
 //Procesamiento de comandos
