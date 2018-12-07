@@ -11,6 +11,7 @@
 #include "comandos.h"
 #include "vuelos.h"
 
+
 /* ******************************************************************
  *                        FUNCIONES PRINCIPALES
  * *****************************************************************/
@@ -109,6 +110,13 @@ bool ver_tablero(abb_t* abb, size_t cantidad_vuelos, char* fecha_desde, char* fe
 			linea = (char*)lista_iter_ver_actual(lista_iter);
 			vector = split(linea, ' ');
 			datos[k] = fecha_y_clave(clave, vector[POS_NUMERO_VUELO]);
+			if(k > 0 && strcmp(datos[k][1],datos[k-1][1]) < 0){
+				for(size_t i = k; i > 0; i--){
+					if(strcmp(datos[i][1],datos[i-1][1]) > 0)
+						break;
+					swap_datos_vuelo(&(datos[i]), &(datos[i-1]));
+				}
+			}
 			k++;
 			free_strv(vector);
 			lista_iter_avanzar(lista_iter);
@@ -120,7 +128,8 @@ bool ver_tablero(abb_t* abb, size_t cantidad_vuelos, char* fecha_desde, char* fe
 	}
 	
 	if(strcmp(modo, MODO_ASCENDENTE)){
-		for(i = k-1; 0 <= i; i--){
+		
+		for(i = 0; i < k; i++){
 		printf("%s - %s\n", *(datos[i]), datos[i][1]);
 		free(*(datos[i]));
 		free(datos[i][1]);
@@ -128,7 +137,7 @@ bool ver_tablero(abb_t* abb, size_t cantidad_vuelos, char* fecha_desde, char* fe
 		}
 	}
 	else{
-		for(i = 0; i < k; i++){
+		for(i = k-1; 0 <= i; i--){
 		printf("%s - %s\n", *(datos[i]), datos[i][1]);
 		free(*(datos[i]));
 		free(datos[i][1]);
@@ -155,14 +164,16 @@ bool prioridad_vuelos(hash_t* hash, size_t cantidad_vuelos){
 	heap_t* heap = heap_crear(comparar_prioridades);
 	if(!heap)
 		return false;
-	
+
 	hash_iter_t* iter = hash_iter_crear(hash);
 	if(!iter){
 		heap_destruir(heap, NULL);
 		return false;
 	}
+
 	if(cantidad_vuelos > hash_cantidad(hash))
 		cantidad_vuelos = hash_cantidad(hash);
+
 	char*** a_encolar = malloc(sizeof(char**)*cantidad_vuelos);
 	char*** a_imprimir = malloc(sizeof(char**)*cantidad_vuelos);
 	char** a_comparar;
