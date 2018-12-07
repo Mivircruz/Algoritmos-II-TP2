@@ -152,12 +152,10 @@ bool ver_informacion_vuelo(hash_t* hash, char* codigo_vuelo){
 
 bool prioridad_vuelos(hash_t* hash, size_t cantidad_vuelos){
 
-	if(!hash_cantidad(hash))
-		return false;
-	
 	heap_t* heap = heap_crear(comparar_prioridades);
 	if(!heap)
-		return NULL;
+		return false;
+	
 	hash_iter_t* iter = hash_iter_crear(hash);
 	if(!iter){
 		heap_destruir(heap, NULL);
