@@ -187,9 +187,9 @@ bool prioridad_vuelos(hash_t* hash, size_t cantidad_vuelos){
 		hash_iter_avanzar(iter);
 	}
 	while(!hash_iter_al_final(iter)){
-
+		
 		a_comparar = prioridad_y_clave((char*)hash_obtener(hash, hash_iter_ver_actual(iter)));
-		if(comparar_prioridades(heap_ver_max(heap), (void**)&a_comparar) > 0){
+		if(comparar_prioridades(heap_ver_max(heap), (void**)&a_comparar) >= 0){
 			reemplazante = heap_desencolar(heap);
 			free(**reemplazante);
 			free((*reemplazante)[1]);
@@ -197,6 +197,7 @@ bool prioridad_vuelos(hash_t* hash, size_t cantidad_vuelos){
 			(*reemplazante)[1] = a_comparar[1];
 			heap_encolar(heap, reemplazante);
 		}
+
 		hash_iter_avanzar(iter);
 	}
 	for(i = 0; !heap_esta_vacio(heap); i++)
@@ -210,5 +211,6 @@ bool prioridad_vuelos(hash_t* hash, size_t cantidad_vuelos){
 	free(a_imprimir);
 	return true;
 }
+
 
 
