@@ -19,6 +19,8 @@
 bool agregar_archivo(char* nombre_archivo, hash_t* hash, abb_t* abb){
 
 	char* linea = NULL;
+	char* vuelo_repetido_cadena;
+	char** vuelo_repetido_arreglo;
 	size_t capacidad = 0;
 	char** info_vuelo;
 	FILE* archivo = fopen(nombre_archivo, "r");
@@ -32,8 +34,17 @@ bool agregar_archivo(char* nombre_archivo, hash_t* hash, abb_t* abb){
 		quitar_salto_en_arreglo(info_vuelo);
 		char* datos_vuelo_a_guardar = join(info_vuelo, ' ');
 		
-		hash_guardar(hash, info_vuelo[POS_NUMERO_VUELO], datos_vuelo_a_guardar);
+		//Si el número de vuelo ya se encuentra en el sistema, actualiza su información en el abb:
+
+		if(hash_pertenece(hash, info_vuelo[POS_NUMERO_VUELO])){
+			vuelo_repetido_cadena = (char*)hash_obtener(hash, info_vuelo[POS_NUMERO_VUELO]);
+			vuelo_repetido_arreglo = split (vuelo_repetido_cadena, ' ');
+			abb_borrar(abb, vuelo_repetido_arreglo[POS_FECHA_VUELO]);
+			free_strv(vuelo_repetido_arreglo);
+		}
 		abb_guardar(abb, info_vuelo[POS_FECHA_VUELO], datos_vuelo_a_guardar);
+		hash_guardar(hash, info_vuelo[POS_NUMERO_VUELO], datos_vuelo_a_guardar);
+		
 		free_strv(info_vuelo);
 	}
 
