@@ -145,13 +145,15 @@ int comparar_prioridades(const void* a, const void* b){
 	char**vuelo2 = *(char***)b;
 	long int prioridad1 = strtol(*vuelo1,&ptr,10);
 	long int prioridad2 = strtol(*vuelo2,&ptr,10);
+	long int codigo_vuelo1 = strtol(vuelo1[1],&ptr,10);
+	long int codigo_vuelo2 = strtol(vuelo2[1],&ptr,10);
 	if(prioridad1 > prioridad2)
 		return -1;
 	if(prioridad1 < prioridad2)
 		return 1;
 	if(prioridad1 == prioridad2){
-		if(strcmp(vuelo1[1],vuelo2[1]) < 0)
-			return 1;
+		if(codigo_vuelo2 < codigo_vuelo1)
+			return 0;
 		else
 			return -1;
 	}
