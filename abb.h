@@ -75,14 +75,15 @@ void abb_in_order(abb_t* arbol, bool visitar(const char*, lista_t*, void*), void
  *                    PRIMITIVAS DEL ITERADOR EXTERNO
  * *****************************************************************/
 
-//Crea un iterador externo que recorre el arbol.
+//Crea un iterador externo que recorre el arbol en el rango de las fecha pasadas y con el modo especificado.
 //Pre: el arbol fue creado.
 //Post: el iterador fue creado.
-abb_iter_t *abb_iter_in_crear(const abb_t* arbol);
+abb_iter_t *abb_iter_in_crear(const abb_t* arbol, char* desde, char* hasta, char* modo);
 
-//Avanza siguiendo un recorrido in order. Devuelve true si pudo avanzar, false en caso contrario.
+//Avanza siguiendo un recorrido que depende del modo pasado por parámetro. 
+//Devuelve true si pudo avanzar, false en caso contrario.
 //Pre: el iterador fue creado.
-bool abb_iter_in_avanzar(abb_iter_t *iter);
+bool abb_iter_in_rango_avanzar(abb_iter_t* iter, const char* desde, const char* hasta, char* modo);
 
 //Muestra la clave del nodo al que está apuntado.
 //Pre: el iterador fue creado.
@@ -91,11 +92,6 @@ const char* abb_iter_in_ver_actual(const abb_iter_t* iter);
 //Devuelve true si el iterador se encuentra al final, false en caso contrario.
 //Pre: el iterador fue creado.
 bool abb_iter_in_al_final(const abb_iter_t* iter);
-
-//Itera el abb hasta encontrar la clave pasada por parámetro y la devuelve.
-//En caso no encontrar la clave, devuelve NULL
-//Pre: el iterador fue creado.
-const char* abb_iter_in_buscar_clave(abb_iter_t* iter, const char* desde);
 
 //Destruye el iterador.
 //Pre: el iterador fue creado.
