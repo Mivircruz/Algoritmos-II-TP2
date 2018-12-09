@@ -55,7 +55,7 @@ bool agregar_archivo(char* nombre_archivo, hash_t* hash, abb_t* abb){
 
 bool borrar(abb_t* abb, hash_t* hash, char* fecha_desde, char* fecha_hasta){
 
-	abb_iter_t* iter = abb_iter_in_crear(abb);
+	abb_iter_t* iter = abb_iter_in_crear(abb, fecha_desde, fecha_hasta, MODO_ASCENDENTE);
 	const char* clave;
 	char* a_imprimir;
 	char** vector_linea;
@@ -64,12 +64,15 @@ bool borrar(abb_t* abb, hash_t* hash, char* fecha_desde, char* fecha_hasta){
 	size_t i = 0;
 	lista_iter_t* lista_iter;
 	
-	clave = abb_iter_in_buscar_clave(iter, fecha_desde);
+	clave = abb_iter_in_ver_actual(iter);
 
-	while(clave && comparar_fechas(fecha_hasta, clave) > 0){
+	//Recorre el abb sólo en el ragno de fechas indicado.
+	while(!abb_iter_in_al_final(iter)){
 
 		abb_claves[i] = strdup(clave);
 		datos_vuelo = abb_obtener(abb, clave);
+
+		//Borra los vuelos que tengan la misma fecha en el hash.
 		while(lista_largo(datos_vuelo)){
 
 			lista_iter = lista_iter_crear(datos_vuelo);
@@ -83,13 +86,14 @@ bool borrar(abb_t* abb, hash_t* hash, char* fecha_desde, char* fecha_hasta){
 		}
 		i++;
 
-		abb_iter_in_avanzar(iter);
+		abb_iter_in_rango_avanzar(iter, fecha_desde, fecha_hasta, MODO_ASCENDENTE);
 		clave = abb_iter_in_ver_actual(iter);
 		lista_destruir(datos_vuelo, NULL);
 	}
 
 	abb_iter_in_destruir(iter);
 	
+	//Borra los vuelos correspondientes en el abb.
 	for(size_t j = 0; j < i; j++){
 		abb_borrar(abb,abb_claves[j]);
 		free(abb_claves[j]);
@@ -101,8 +105,7 @@ bool borrar(abb_t* abb, hash_t* hash, char* fecha_desde, char* fecha_hasta){
 bool ver_tablero(abb_t* abb, size_t cantidad_vuelos, char* fecha_desde, char* fecha_hasta, char* modo){
 	
 	
-	abb_iter_t* iter = abb_iter_in_crear(abb);
-	long int i, k = 0;
+	abb_iter_t* iter = abb_iter_in_crear(abb, fecha_desde, fecha_hasta, modo);
 	char** datos[cantidad_vuelos];
 	char* linea;
 	char** vector;
@@ -110,52 +113,51 @@ bool ver_tablero(abb_t* abb, size_t cantidad_vuelos, char* fecha_desde, char* fe
 	lista_iter_t* lista_iter;
 	const char* clave;
 	
-	clave = abb_iter_in_buscar_clave(iter, fecha_desde);
+	clave = abb_iter_in_ver_actual(iter);
 	
-	while(clave && comparar_fechas(fecha_hasta, clave)>0 && k<cantidad_vuelos){
+	for(size_t j = 0; j < cantidad_vuelos; j++){
 		
 		datos_vuelo = abb_obtener(abb, clave);
 		lista_iter = lista_iter_crear(datos_vuelo);
+
+		//Si hay vuelos con la misma fecha, desempata por número de vuelo.
 		while(!lista_iter_al_final(lista_iter)){
 			
 			linea = (char*)lista_iter_ver_actual(lista_iter);
 			vector = split(linea, ' ');
-			datos[k] = fecha_y_clave(clave, vector[POS_NUMERO_VUELO]);
-			if(k > 0 && strcmp(datos[k][1],datos[k-1][1]) < 0){
-				for(size_t i = k; i > 0; i--){
+			datos[j] = fecha_y_clave(clave, vector[POS_NUMERO_VUELO]);
+			if(j > 0 && strcmp(datos[j][1],datos[j-1][1]) < 0){
+				for(size_t i = j; i > 0; i--){
 					if(strcmp(datos[i][1],datos[i-1][1]) > 0)
 						break;
 					swap_datos_vuelo(&(datos[i]), &(datos[i-1]));
 				}
 			}
-			k++;
 			free_strv(vector);
 			lista_iter_avanzar(lista_iter);
 		}
 		lista_iter_destruir(lista_iter);
-		abb_iter_in_avanzar(iter);
+		abb_iter_in_rango_avanzar(iter, fecha_desde, fecha_hasta, modo);
 		clave = abb_iter_in_ver_actual(iter);
 		
 	}
-	
-	if(strcmp(modo, MODO_ASCENDENTE)){
-		
-		for(i = 0; i < k; i++){
-		printf("%s - %s\n", *(datos[i]), datos[i][1]);
-		free(*(datos[i]));
-		free(datos[i][1]);
-		free(datos[i]);
+
+	if(!strcmp(modo, MODO_ASCENDENTE)){
+		for(size_t i = 0; i < cantidad_vuelos; i++){
+			printf("%s - %s\n", *(datos[i]), datos[i][1]);
+			free(*(datos[i]));
+			free(datos[i][1]);
+			free(datos[i]);
 		}
 	}
 	else{
-		for(i = k-1; 0 <= i; i--){
-		printf("%s - %s\n", *(datos[i]), datos[i][1]);
-		free(*(datos[i]));
-		free(datos[i][1]);
-		free(datos[i]);
+		for(long int i = cantidad_vuelos-1; i >= 0; i--){
+			printf("%s - %s\n", *(datos[i]), datos[i][1]);
+			free(*(datos[i]));
+			free(datos[i][1]);
+			free(datos[i]);
 		}
 	}
-	
 	abb_iter_in_destruir(iter);
 	
 	return true;
