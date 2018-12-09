@@ -112,10 +112,11 @@ bool ver_tablero(abb_t* abb, size_t cantidad_vuelos, char* fecha_desde, char* fe
 	lista_t* datos_vuelo;
 	lista_iter_t* lista_iter;
 	const char* clave;
+	size_t j;
 	
 	clave = abb_iter_in_ver_actual(iter);
 	
-	for(size_t j = 0; j < cantidad_vuelos; j++){
+	for(j = 0; j < cantidad_vuelos && clave; j++){
 		
 		datos_vuelo = abb_obtener(abb, clave);
 		lista_iter = lista_iter_crear(datos_vuelo);
@@ -126,7 +127,7 @@ bool ver_tablero(abb_t* abb, size_t cantidad_vuelos, char* fecha_desde, char* fe
 			linea = (char*)lista_iter_ver_actual(lista_iter);
 			vector = split(linea, ' ');
 			datos[j] = fecha_y_clave(clave, vector[POS_NUMERO_VUELO]);
-			if(j > 0 && strcmp(datos[j][1],datos[j-1][1]) < 0){
+			if(j > 0 && strcmp(datos[j][0],datos[j-1][0]) == 0){
 				for(size_t i = j; i > 0; i--){
 					if(strcmp(datos[i][1],datos[i-1][1]) > 0)
 						break;
@@ -142,22 +143,14 @@ bool ver_tablero(abb_t* abb, size_t cantidad_vuelos, char* fecha_desde, char* fe
 		
 	}
 
-	if(!strcmp(modo, MODO_ASCENDENTE)){
-		for(size_t i = 0; i < cantidad_vuelos; i++){
-			printf("%s - %s\n", *(datos[i]), datos[i][1]);
-			free(*(datos[i]));
-			free(datos[i][1]);
-			free(datos[i]);
-		}
+
+	for(size_t i = 0; i < j; i++){
+		printf("%s - %s\n", *(datos[i]), datos[i][1]);
+		free(*(datos[i]));
+		free(datos[i][1]);
+		free(datos[i]);
 	}
-	else{
-		for(long int i = cantidad_vuelos-1; i >= 0; i--){
-			printf("%s - %s\n", *(datos[i]), datos[i][1]);
-			free(*(datos[i]));
-			free(datos[i][1]);
-			free(datos[i]);
-		}
-	}
+	
 	abb_iter_in_destruir(iter);
 	
 	return true;
@@ -224,6 +217,9 @@ bool prioridad_vuelos(hash_t* hash, size_t cantidad_vuelos){
 	free(a_imprimir);
 	return true;
 }
+
+
+
 
 
 
