@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include "abb.h"
 #include "lista.h"
+#include "comandos.h"
 #include "pila.h"
 
 /* ******************************************************************
@@ -133,12 +134,46 @@ void _abb_destruir(nodo_t* nodo, abb_destruir_dato_t destruir_dato){
 	return;
 }
 
-void apilar_hijos_izquierdos(pila_t* pila, nodo_t* nodo){
+void apilar_siguientes(abb_iter_t* iter, nodo_t* nodo, const char* desde, const char* hasta, char* modo){
 
 	nodo_t* actual = nodo;
+
 	while(actual){
-		pila_apilar(pila, actual);
-		actual = actual->izq;
+
+		//Si la fecha es menor a la fecha "desde", se busca a su derecha.
+		if(iter->comparar_clave(actual->clave, desde) < 0){
+
+			while(iter->comparar_clave(actual->clave, desde) < 0){
+
+				if(!actual->der)
+					return;
+				actual = actual->der;
+			}
+			pila_apilar(iter->pila, actual);
+			actual = actual->der;
+			continue;
+		}
+
+		//Si la fecha es mayor a la fecha "hasta", se busca a su izquierda.
+		else if(iter->comparar_clave(actual->clave, hasta) > 0){
+
+			while(iter->comparar_clave(actual->clave, hasta) > 0){
+
+				if(!actual->izq)
+					return;
+				actual = actual->izq;
+			}
+			pila_apilar(iter->pila, actual);
+			actual = actual->izq;
+			continue;
+		}
+
+		pila_apilar(iter->pila, actual);
+
+		if(!strcmp(modo, MODO_ASCENDENTE))
+			actual = actual->izq;
+		else
+			actual = actual->der;
 	}
 }
 
@@ -313,7 +348,7 @@ void abb_in_order(abb_t* arbol, bool visitar(const char*, lista_t*, void*), void
  *              PRIMITIVAS DEL ITERADOR EXTERNO 
  * *****************************************************************/
 
-abb_iter_t *abb_iter_in_crear(const abb_t* arbol){
+abb_iter_t *abb_iter_in_crear(const abb_t* arbol, char* desde, char* hasta, char* modo){
 
 	abb_iter_t* iter = malloc(sizeof(abb_iter_t));
 	if(!iter)
@@ -321,21 +356,29 @@ abb_iter_t *abb_iter_in_crear(const abb_t* arbol){
 
 	iter->comparar_clave = arbol->comparar_clave;
 	iter->pila = pila_crear();
-	if(arbol->raiz)
-		apilar_hijos_izquierdos(iter->pila, arbol->raiz);
+	nodo_t* actual = arbol->raiz;
+
+	if(iter->comparar_clave(actual->clave, desde) < 0 ){
+			while(iter->comparar_clave(actual->clave, desde) < 0){
+				if(!actual->der)
+					return iter;
+				actual = actual->der;
+			}
+	}
+
+	if(iter->comparar_clave(actual->clave, hasta) > 0){
+			while(iter->comparar_clave(actual->clave, hasta) > 0){
+
+				if(!actual->izq)
+					return iter;
+				actual = actual->izq;
+			}
+	}
+
+	if(abb_cantidad((abb_t*)arbol))
+		apilar_siguientes(iter, actual, desde, hasta, modo);
+	
 	return iter;
-}
-
-bool abb_iter_in_avanzar(abb_iter_t *iter){
-
-	if(pila_esta_vacia(iter->pila))
-		return false;
-
-	nodo_t* padre = pila_desapilar(iter->pila);
-	if(padre->der)
-		apilar_hijos_izquierdos(iter->pila, padre->der);
-
-	return true;
 }
 
 const char* abb_iter_in_ver_actual(const abb_iter_t* iter){
@@ -353,12 +396,22 @@ bool abb_iter_in_al_final(const abb_iter_t* iter){
 	return pila_esta_vacia(iter->pila);
 }
 
-const char* abb_iter_in_buscar_clave(abb_iter_t* iter, const char* desde){
+bool abb_iter_in_rango_avanzar(abb_iter_t* iter, const char* desde, const char* hasta, char* modo){
 
-	while(!abb_iter_in_al_final(iter) && iter->comparar_clave(abb_iter_in_ver_actual(iter), desde) <= 0)
-		abb_iter_in_avanzar(iter);
+	if(pila_esta_vacia(iter->pila))
+		return false;
+
+	nodo_t* actual = pila_desapilar(iter->pila);
+
+	if(!strcmp(modo, MODO_ASCENDENTE)){
+		if(actual->der)
+			apilar_siguientes(iter, actual->der, desde, hasta, modo);
+	}
+	else
+		if(actual->izq)
+			apilar_siguientes(iter, actual->izq, desde, hasta, modo);
 	
-	return (abb_iter_in_al_final(iter)) ? NULL : abb_iter_in_ver_actual(iter);
+	return true;
 }
 
 void abb_iter_in_destruir(abb_iter_t* iter){
