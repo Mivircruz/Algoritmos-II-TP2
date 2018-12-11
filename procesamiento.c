@@ -121,13 +121,16 @@ bool ver_tablero(abb_t* abb, size_t cantidad_vuelos, char* fecha_desde, char* fe
 		datos_vuelo = abb_obtener(abb, clave);
 		lista_iter = lista_iter_crear(datos_vuelo);
 
-		//Si hay vuelos con la misma fecha, desempata por número de vuelo.
 		while(!lista_iter_al_final(lista_iter)){
-			
+
 			linea = (char*)lista_iter_ver_actual(lista_iter);
 			vector = split(linea, ' ');
 			datos[j] = fecha_y_clave(clave, vector[POS_NUMERO_VUELO]);
-			if(j > 0 && strcmp(datos[j][0],datos[j-1][0]) == 0){
+		
+			//Si hay vuelos con la misma fecha, desempata por número de vuelo.
+
+			if(j > 0 && !strcmp(*(datos[j]),*(datos[j-1]))){
+
 				for(size_t i = j; i > 0; i--){
 					if(strcmp(datos[i][1],datos[i-1][1]) > 0)
 						break;
@@ -136,6 +139,8 @@ bool ver_tablero(abb_t* abb, size_t cantidad_vuelos, char* fecha_desde, char* fe
 			}
 			free_strv(vector);
 			lista_iter_avanzar(lista_iter);
+			if(!lista_iter_al_final(lista_iter))
+				j++;
 		}
 		lista_iter_destruir(lista_iter);
 		abb_iter_in_rango_avanzar(iter, fecha_desde, fecha_hasta, modo);
