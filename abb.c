@@ -155,7 +155,7 @@ void apilar_siguientes(abb_iter_t* iter, nodo_t* nodo, const char* desde, const 
 		}
 
 		//Si la fecha es mayor a la fecha "hasta", se busca a su izquierda.
-		else if(iter->comparar_clave(actual->clave, hasta) > 0){
+		if(iter->comparar_clave(actual->clave, hasta) > 0){
 
 			while(iter->comparar_clave(actual->clave, hasta) > 0){
 
@@ -358,25 +358,28 @@ abb_iter_t *abb_iter_in_crear(const abb_t* arbol, char* desde, char* hasta, char
 	iter->pila = pila_crear();
 	nodo_t* actual = arbol->raiz;
 
-	if(iter->comparar_clave(actual->clave, desde) < 0 ){
-			while(iter->comparar_clave(actual->clave, desde) < 0){
-				if(!actual->der)
-					return iter;
+	if(!abb_cantidad((abb_t*)arbol))
+		return iter;
+
+	while(iter->comparar_clave(actual->clave, desde) < 0 || iter->comparar_clave(actual->clave, hasta) > 0){
+
+		if(iter->comparar_clave(actual->clave, desde) < 0 ){
+
+			if(actual->der)
 				actual = actual->der;
-			}
-	}
+			else return iter;
+		}
 
-	if(iter->comparar_clave(actual->clave, hasta) > 0){
-			while(iter->comparar_clave(actual->clave, hasta) > 0){
+		if(iter->comparar_clave(actual->clave, hasta) > 0){
 
-				if(!actual->izq)
-					return iter;
+			if(actual->izq)
 				actual = actual->izq;
-			}
+			else return iter;
+				
+		}
 	}
 
-	if(abb_cantidad((abb_t*)arbol))
-		apilar_siguientes(iter, actual, desde, hasta, modo);
+	apilar_siguientes(iter, actual, desde, hasta, modo);
 	
 	return iter;
 }
