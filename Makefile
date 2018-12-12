@@ -4,7 +4,7 @@ VFLAGS = --leak-check=full --track-origins=yes --show-reachable=yes
 
 CFILES = main.c comandos.c strutil.c procesamiento.c vuelos.c abb.c lista.c hash.c heap.c pila.c
 
-HFILES = comandos.h strutil.h procesamiento.h vuelos.h abb.h lista.h hash.h heap.h pila.h
+HFILES = deps.mk comandos.h strutil.h procesamiento.h vuelos.h abb.h lista.h hash.h heap.h pila.h
 EXEC = pruebas
 
 build: $(CFILES) 
