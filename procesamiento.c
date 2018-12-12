@@ -39,7 +39,7 @@ bool agregar_archivo(char* nombre_archivo, hash_t* hash, abb_t* abb){
 		if(hash_pertenece(hash, info_vuelo[POS_NUMERO_VUELO])){
 			vuelo_repetido_cadena = (char*)hash_obtener(hash, info_vuelo[POS_NUMERO_VUELO]);
 			vuelo_repetido_arreglo = split (vuelo_repetido_cadena, ' ');
-			abb_borrar(abb, vuelo_repetido_arreglo[POS_FECHA_VUELO]);
+			abb_borrar(abb, vuelo_repetido_arreglo[POS_FECHA_VUELO], info_vuelo[POS_NUMERO_VUELO]);
 			free_strv(vuelo_repetido_arreglo);
 		}
 		abb_guardar(abb, info_vuelo[POS_FECHA_VUELO], datos_vuelo_a_guardar);
@@ -88,14 +88,13 @@ bool borrar(abb_t* abb, hash_t* hash, char* fecha_desde, char* fecha_hasta){
 
 		abb_iter_in_rango_avanzar(iter, fecha_desde, fecha_hasta, MODO_ASCENDENTE);
 		clave = abb_iter_in_ver_actual(iter);
-		lista_destruir(datos_vuelo, NULL);
 	}
 
 	abb_iter_in_destruir(iter);
 	
 	//Borra los vuelos correspondientes en el abb.
 	for(size_t j = 0; j < i; j++){
-		abb_borrar(abb,abb_claves[j]);
+		lista_destruir((lista_t*)abb_borrar(abb, abb_claves[j], NULL), free);
 		free(abb_claves[j]);
 	}
 
