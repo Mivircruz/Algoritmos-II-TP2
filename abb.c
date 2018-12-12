@@ -235,7 +235,7 @@ bool abb_guardar(abb_t *abb, const char *clave, void *dato){
 	return true;
 }
 
-lista_t* abb_borrar(abb_t *arbol, const char *clave){
+void* abb_borrar(abb_t *arbol, const char *clave, const char* extra){
 
 	padre_t* a_borrar_padre = padre_crear();
 	if(!a_borrar_padre)
@@ -248,13 +248,28 @@ lista_t* abb_borrar(abb_t *arbol, const char *clave){
 	}
 	
 	lista_t* a_devolver = a_borrar->lista;
+	lista_iter_t* iter;
+	char* vuelo_a_borrar;
+
+	if(extra){
+
+		iter = lista_iter_crear(a_devolver);
+		while(!lista_iter_al_final(iter)){
+			if(!strcmp((char*)lista_iter_ver_actual(iter), extra)){
+				vuelo_a_borrar = (char*)lista_iter_borrar(iter);
+				return vuelo_a_borrar;
+			}
+			lista_iter_avanzar(iter);
+		}
+		return NULL;
+	}
 
 	//Primer caso: a_borrar es un nodo interno con dos hijos.
 	if(a_borrar->izq && a_borrar->der){
 	
 		nodo_t* reemplazante_nodo = traza_izquierda(a_borrar->der);
 		char* reemplazante_clave = strdup(reemplazante_nodo->clave);
-		lista_t* reemplazante_lista = abb_borrar(arbol, reemplazante_nodo->clave);
+		lista_t* reemplazante_lista = (lista_t*)abb_borrar(arbol, reemplazante_nodo->clave, NULL);
 		free(a_borrar->clave);
 		a_borrar->clave = reemplazante_clave;
 		a_borrar->lista = reemplazante_lista;
