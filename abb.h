@@ -41,10 +41,12 @@ abb_t* abb_crear(abb_comparar_clave_t cmp, abb_destruir_dato_t destruir_dato);
 //Post: se insertó un elemento al árbol.
 bool abb_guardar(abb_t *arbol, const char *clave, void *dato);
 
-//Saca la lista que contenga la clave pasada por parámetro. En caso de no encontrarse en el abb, se deuelve NULL.
+//Si se quiere sacar la lista que contenga la fecha pasada por parámetro, extra = NULL. 
+//Si se desea sacar una fecha con determinado número de vuelo, extra = nro de vuelo.
+//En caso de no encontrarse en el abb, se deuelve NULL.
 //Pre: el abb fue creado.
 //Post: se devolvió el dato del elemento o NULL según corresponda.
-lista_t* abb_borrar(abb_t *arbol, const char *clave);
+void* abb_borrar(abb_t *arbol, const char *clave, const char* extra);
 
 //Devuelve el elemento en caso de estar en el abb, NULL en caso contrario.
 //Pre: el abb fue creado.
