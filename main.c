@@ -9,7 +9,6 @@
 #include "strutil.h"
 #include "hash.h"
 #include "abb.h"
-#include "lista.h"
 
 int main(int argc, char* argv[]){
 
@@ -19,7 +18,7 @@ int main(int argc, char* argv[]){
 	char* linea = NULL;
 	size_t capacidad = 0;
 	hash_t* hash = hash_crear(NULL);
-	abb_t* abb = abb_crear(comparar_fechas, free);
+	abb_t* abb = abb_crear(comparar_claves_abb, free);
 	char** vector_linea;
 
 //Procesamiento de comandos

@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include "lista.h"
 
 /* *****************************************************************
  *                DEFINICION DE LOS TIPOS DE DATOS
@@ -41,16 +40,14 @@ abb_t* abb_crear(abb_comparar_clave_t cmp, abb_destruir_dato_t destruir_dato);
 //Post: se insertó un elemento al árbol.
 bool abb_guardar(abb_t *arbol, const char *clave, void *dato);
 
-//Si se quiere sacar la lista que contenga la fecha pasada por parámetro, extra = NULL. 
-//Si se desea sacar una fecha con determinado número de vuelo, extra = nro de vuelo.
-//En caso de no encontrarse en el abb, se deuelve NULL.
+//Saca el elemento que contenga la clave pasada por parámetro. En caso de no encontrarse en el abb, se deuelve NULL.
 //Pre: el abb fue creado.
 //Post: se devolvió el dato del elemento o NULL según corresponda.
-void* abb_borrar(abb_t *arbol, const char *clave, const char* extra);
+void *abb_borrar(abb_t *arbol, const char *clave);
 
 //Devuelve el elemento en caso de estar en el abb, NULL en caso contrario.
 //Pre: el abb fue creado.
-lista_t* abb_obtener(const abb_t *arbol, const char *clave);
+void *abb_obtener(const abb_t *arbol, const char *clave);
 
 //Devuelve true si el la clave se encuentra en el árbol. False en caso contrario.
 //Pre: el abb fue creado.
@@ -71,7 +68,7 @@ void abb_destruir(abb_t *arbol);
 
 //Recorre el abb aplicando la función visitar.
 //Pre: el abb y la función visitar fueron creadas. No se puede eliminar o insterar elementos mientras se recorre el abb.
-void abb_in_order(abb_t* arbol, bool visitar(const char*, lista_t*, void*), void* extra);
+void abb_in_order(abb_t* arbol, bool visitar(const char*, void*, void*), void* extra);
 
 /* *****************************************************************
  *                    PRIMITIVAS DEL ITERADOR EXTERNO
@@ -80,12 +77,12 @@ void abb_in_order(abb_t* arbol, bool visitar(const char*, lista_t*, void*), void
 //Crea un iterador externo que recorre el arbol en el rango de las fecha pasadas y con el modo especificado.
 //Pre: el arbol fue creado.
 //Post: el iterador fue creado.
-abb_iter_t *abb_iter_in_crear(const abb_t* arbol, char* desde, char* hasta, char* modo);
+abb_iter_t *abb_iter_in_crear(const abb_t* arbol, char* desde, char* hasta);
 
 //Avanza siguiendo un recorrido que depende del modo pasado por parámetro. 
 //Devuelve true si pudo avanzar, false en caso contrario.
 //Pre: el iterador fue creado.
-bool abb_iter_in_rango_avanzar(abb_iter_t* iter, const char* desde, const char* hasta, char* modo);
+bool abb_iter_in_rango_avanzar(abb_iter_t* iter);
 
 //Muestra la clave del nodo al que está apuntado.
 //Pre: el iterador fue creado.

@@ -5,6 +5,11 @@
 #define POS_PRIORIDAD_VUELO		5
 #define POS_FECHA_VUELO			6
 
+
+//Compara las claves 1 y 2. 
+//Devuelve -1 en caso de que la clave 1 sea menor que la clave 2, 1 en caso contrario.
+int comparar_claves_abb(const char* clave1, const char* clave2);
+
 //Si la cantidad de vuelos a imprimir es un número entero mayor a cero, devuelve true.
 //Devuelve false en caso contrario.
 bool cantidad_vuelos_valida(char* linea, long int* vuelos);
