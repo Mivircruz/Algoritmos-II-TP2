@@ -60,6 +60,7 @@ bool borrar(abb_t* abb, hash_t* hash, char* fecha_desde, char* fecha_hasta){
 	abb_iter_t* iter = abb_iter_in_crear(abb, fecha_desde, fecha_hasta);
 	const char* clave;
 	char** abb_claves = malloc(sizeof(char*)* abb_cantidad(abb));
+	char** hash_info_vuelo;
 	char* datos_vuelo;
 	size_t i = 0;
 	
@@ -73,12 +74,15 @@ bool borrar(abb_t* abb, hash_t* hash, char* fecha_desde, char* fecha_hasta){
 			continue;
 		}
 
-		abb_claves[i] = strdup(clave);
-		datos_vuelo = abb_obtener(abb, clave);
+		abb_claves[i] = (char*)clave;
+		datos_vuelo = (char*)abb_obtener(abb, clave);
+		
+		//Borra los vuelos correspondientes del hash.
+		hash_info_vuelo = split(datos_vuelo, ' ');
+		hash_borrar(hash, hash_info_vuelo[POS_NUMERO_VUELO]);
+		free_strv(hash_info_vuelo);
+
 		printf("%s\n", datos_vuelo);
-
-		hash_borrar(hash, datos_vuelo);
-
 		abb_iter_in_rango_avanzar(iter);
 		clave = abb_iter_in_ver_actual(iter);
 	}
