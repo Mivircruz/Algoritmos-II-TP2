@@ -10,14 +10,14 @@
 //Devuelve -1 en caso de que la clave 1 sea menor que la clave 2, 1 en caso contrario.
 int comparar_claves_abb(const char* clave1, const char* clave2);
 
-//Si la cantidad de vuelos a imprimir es un número entero mayor a cero, devuelve true.
-//Devuelve false en caso contrario.
-bool cantidad_vuelos_valida(char* linea, long int* vuelos);
-
 //Compara las fechas inicio y fin. 
 //Devuelve -1 en caso de que la fecha de inicio sea menor que la de fin, 1 en caso contrario.
 //En caso de ser iguales, devuelve 0.
 int comparar_fechas(const char* fecha_inicio, const char* fecha_fin);
+
+//Si la cantidad de vuelos a imprimir es un número entero mayor a cero, devuelve true.
+//Devuelve false en caso contrario.
+bool cantidad_vuelos_valida(char* linea, long int* vuelos);
 
 //La función comparar_prioridades devuelve:
 //1 si la primera prioridad es mayor a la segunda.
