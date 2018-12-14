@@ -59,6 +59,12 @@ bool borrar(abb_t* abb, hash_t* hash, char* fecha_desde, char* fecha_hasta){
 
 	for(;!abb_iter_in_al_final(iter) && comparar_claves_abb(clave, fecha_hasta) < 0; i++){
 
+		if(comparar_claves_abb(clave, fecha_desde) < 0){
+			abb_iter_in_rango_avanzar(iter);
+			clave = abb_iter_in_ver_actual(iter);
+			continue;
+		}
+
 		abb_claves[i] = strdup(clave);
 		datos_vuelo = abb_obtener(abb, clave);
 		printf("%s\n", datos_vuelo);
@@ -90,12 +96,17 @@ bool ver_tablero(abb_t* abb, size_t cantidad_vuelos, char* fecha_desde, char* fe
 	const char* clave;
 	char** datos_vuelo;
 	char* a_imprimir;
-	size_t j;
 	
 	clave = abb_iter_in_ver_actual(iter);
 	
-	for(j = 0; !abb_iter_in_al_final(iter) && comparar_claves_abb(clave, fecha_hasta) < 0; j++){
-		
+	for(size_t j = 0; !abb_iter_in_al_final(iter) && comparar_claves_abb(clave, fecha_hasta) < 0; j++){
+
+		if(comparar_claves_abb(clave, fecha_desde) < 0){
+			abb_iter_in_rango_avanzar(iter);
+			clave = abb_iter_in_ver_actual(iter);
+			continue;
+		}
+
 		datos_vuelo = split(clave, ' ');
 		a_imprimir = concatenar_cad_sep(*datos_vuelo, datos_vuelo[1], '-');
 		if(!strcmp(modo, MODO_ASCENDENTE))
@@ -108,12 +119,15 @@ bool ver_tablero(abb_t* abb, size_t cantidad_vuelos, char* fecha_desde, char* fe
 		
 	}
 
-
-	for(size_t i = 0; i < j; i++){
-		if(!strcmp(modo, MODO_ASCENDENTE))
-			printf("%s\n",(char*)cola_desencolar(cola_a_imprimir));
-		else
-			printf("%s\n",(char*)pila_desapilar(pila_a_imprimir));
+	for(size_t i = 0; i < cantidad_vuelos; i++){
+		if(!strcmp(modo, MODO_ASCENDENTE)){
+			if(!cola_esta_vacia(cola_a_imprimir))
+				printf("%s\n",(char*)cola_desencolar(cola_a_imprimir));
+		}
+		else{
+			if(!pila_esta_vacia(pila_a_imprimir))
+				printf("%s\n",(char*)pila_desapilar(pila_a_imprimir));
+		}
 	}
 	
 	abb_iter_in_destruir(iter);

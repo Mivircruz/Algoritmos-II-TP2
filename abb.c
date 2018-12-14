@@ -335,6 +335,7 @@ abb_iter_t *abb_iter_in_crear(const abb_t* arbol, char* desde, char* hasta){
 				
 		}
 	}
+	
 	apilar_hijos_izquierdos(iter->pila, actual);
 	
 	return iter;
