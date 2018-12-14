@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include "abb.h"
 #include "pila.h"
+#include "strutil.h"
 
 /* ******************************************************************
  *              DEFINICIÓN DEL STRUCT ABB E ITERADOR
@@ -71,28 +72,43 @@ padre_t* padre_crear(void){
 //Recorre el árbol buscando un nodo con la clave pasada por parámetro.
 //Además, se pasa un doble puntero para obtener al padre del nodo con la clave.
 //Si no se encuentra al nodo, devuelve NULL.
- nodo_t* abb_recorrer(nodo_t* nodo, const char* clave, abb_comparar_clave_t cmp, padre_t* extra){
+ nodo_t* abb_recorrer(nodo_t* nodo, const char* clave, abb_comparar_clave_t cmp, padre_t* extra, abb_comparar_clave_t* comparar_vuelo){
  	if(!nodo)
  		return NULL;
 
  	//Si encuentra la clave en el árbol, devuelve el nodo que la contiene.
- 	int comparacion_clave = cmp(nodo->clave, clave);
- 	if(!comparacion_clave)
- 		return nodo;
 
+ 	int comparacion_clave = cmp(nodo->clave, clave);
+
+ 	if(comparar_vuelo){
+
+ 		char** info_vuelo = split(nodo->clave, ' ');
+ 		char** clave_vuelo = split(clave, ' ');
+ 		if(!(*comparar_vuelo)(clave_vuelo[1], info_vuelo[1])){
+ 			free_strv(info_vuelo);
+ 			return nodo;
+ 		}
+ 		free_strv(info_vuelo);
+ 	}
+ 	else{
+ 		
+ 		if(!comparacion_clave)
+			return nodo;
+ 	}
+ 	
  	//Si no, busca a izquierda o derecha según la clave sea mayor o menor al nodo actual.
  	if(extra)
  		extra->padre = nodo;
  	if(comparacion_clave < 0){
  		if(extra)
  			extra->izq = false;
- 		return abb_recorrer(nodo->der, clave, cmp, extra);
+ 		return abb_recorrer(nodo->der, clave, cmp, extra, comparar_vuelo);
  	}
 
    else{
    		if(extra)
    			extra->izq = true;
- 		return abb_recorrer(nodo->izq, clave, cmp, extra);
+ 		return abb_recorrer(nodo->izq, clave, cmp, extra, comparar_vuelo);
    }
 
  }
@@ -169,27 +185,30 @@ bool abb_guardar(abb_t *abb, const char *clave, void *dato){
 	if(!extra)
 		return false;
 
- 	nodo_t* nodo_misma_clave = abb_recorrer(abb->raiz, clave, abb->comparar_clave, extra);
- 	if(!nodo_misma_clave){
- 		nodo_t* a_guardar = nodo_abb_crear(clave, dato);
- 		if(!a_guardar)
- 			return false;
-	 	if(!extra->padre)
-	 		abb->raiz = a_guardar;
-	 	else{
-	 		if(!extra->izq)
-	 			extra->padre->der = a_guardar;
-	 		else
-	 			extra->padre->izq = a_guardar;
-	 	}
-	 	abb->cantidad++;
-	 }
-	 	else{
-	 		if(abb->destruir_dato)
-	 			abb->destruir_dato(nodo_misma_clave->dato);
-	 		nodo_misma_clave->dato = dato;
-		}
+	abb_comparar_clave_t cmp_vuelo = strcmp;
+ 	nodo_t* nodo_mismo_vuelo = abb_recorrer(abb->raiz, clave, abb->comparar_clave, extra, &cmp_vuelo);
+
+ 	if(nodo_mismo_vuelo){
+ 		abb_borrar(abb, nodo_mismo_vuelo->clave);
+ 		abb_guardar(abb, clave, dato);
+ 	}
+ 	else{
+	  	nodo_t* a_guardar = nodo_abb_crear(clave, dato);
+	 	if(!a_guardar)
+	 		return false;
+		if(!extra->padre)
+			abb->raiz = a_guardar;
+		 else{
+		 	if(!extra->izq)
+		 		extra->padre->der = a_guardar;
+		 	else
+		 		extra->padre->izq = a_guardar;
+		 }
+		 abb->cantidad++;		
+ 	}
+
 	free(extra);
+	
 	return true;
 }
 
@@ -199,7 +218,7 @@ void *abb_borrar(abb_t *arbol, const char *clave){
 	if(!a_borrar_padre)
 		return NULL;
 
-	nodo_t* a_borrar = abb_recorrer(arbol->raiz, clave, arbol->comparar_clave, a_borrar_padre);
+	nodo_t* a_borrar = abb_recorrer(arbol->raiz, clave, arbol->comparar_clave, a_borrar_padre, NULL);
 	if(!a_borrar){
 		free(a_borrar_padre);
 		return NULL;
@@ -269,7 +288,7 @@ void *abb_borrar(abb_t *arbol, const char *clave){
 
 void *abb_obtener(const abb_t *abb, const char *clave){
 
-	nodo_t* nodo = abb_recorrer(abb->raiz, clave, abb->comparar_clave, NULL);
+	nodo_t* nodo = abb_recorrer(abb->raiz, clave, abb->comparar_clave, NULL, NULL);
 	if(!nodo)
 		return NULL;
 
@@ -278,7 +297,7 @@ void *abb_obtener(const abb_t *abb, const char *clave){
 
 bool abb_pertenece(const abb_t *arbol, const char *clave){
 
-	return (abb_recorrer(arbol->raiz, clave, arbol->comparar_clave, NULL)) ? true : false;
+	return (abb_recorrer(arbol->raiz, clave, arbol->comparar_clave, NULL, NULL)) ? true : false;
 }
 
 size_t abb_cantidad(abb_t *abb){
@@ -335,7 +354,6 @@ abb_iter_t *abb_iter_in_crear(const abb_t* arbol, char* desde, char* hasta){
 				
 		}
 	}
-	
 	apilar_hijos_izquierdos(iter->pila, actual);
 	
 	return iter;

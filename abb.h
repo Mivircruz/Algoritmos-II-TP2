@@ -22,7 +22,6 @@ typedef struct abb_iter abb_iter_t;
 //*)Entero IGUAL a 0 si ambas cadenas son iguales
 typedef int (*abb_comparar_clave_t) (const char *, const char *);
 
-
 typedef void (*abb_destruir_dato_t) (void *);
 
 
