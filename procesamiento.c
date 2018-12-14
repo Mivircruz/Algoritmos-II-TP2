@@ -17,14 +17,15 @@
 /* ******************************************************************
  *                        FUNCIONES PRINCIPALES
  * *****************************************************************/
-
 bool agregar_archivo(char* nombre_archivo, hash_t* hash, abb_t* abb){
 
 	char* linea = NULL;
 	size_t capacidad = 0;
 	char** info_vuelo;
 	FILE* archivo = fopen(nombre_archivo, "r");
-
+	char* concatenacion;
+	char* datos_vuelo_a_guardar;
+	
 	if(!archivo)
 		return false;
 
@@ -32,7 +33,8 @@ bool agregar_archivo(char* nombre_archivo, hash_t* hash, abb_t* abb){
 
 		info_vuelo = split(linea, ',');
 		quitar_salto_en_arreglo(info_vuelo);
-		char* datos_vuelo_a_guardar = join(info_vuelo, ' ');
+		datos_vuelo_a_guardar = join(info_vuelo, ' ');
+		concatenacion = concatenar_cad_sep(info_vuelo[POS_FECHA_VUELO], info_vuelo[POS_NUMERO_VUELO], " ");
 		
 		//Si el número de vuelo ya se encuentra en el sistema, actualiza su información en el abb:
 
@@ -42,14 +44,15 @@ bool agregar_archivo(char* nombre_archivo, hash_t* hash, abb_t* abb){
 			abb_clave_vieja = concatenar_cad_sep(datos_vuelo_viejos[POS_FECHA_VUELO], datos_vuelo_viejos[POS_NUMERO_VUELO]," ");
 			abb_borrar(abb, abb_clave_vieja);
 			free_strv(datos_vuelo_viejos);
+			free(abb_clave_vieja);
 		}
 		hash_guardar(hash, info_vuelo[POS_NUMERO_VUELO], datos_vuelo_a_guardar);
-		abb_guardar(abb, concatenar_cad_sep(info_vuelo[POS_FECHA_VUELO], info_vuelo[POS_NUMERO_VUELO], " "), datos_vuelo_a_guardar);
+		abb_guardar(abb, concatenacion, datos_vuelo_a_guardar);
 		
-		
+		free(concatenacion);
 		free_strv(info_vuelo);
 	}
-
+	
 	free(linea);
 	fclose(archivo);
 	return true;
