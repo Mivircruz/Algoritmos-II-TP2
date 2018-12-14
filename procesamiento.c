@@ -36,8 +36,16 @@ bool agregar_archivo(char* nombre_archivo, hash_t* hash, abb_t* abb){
 		
 		//Si el número de vuelo ya se encuentra en el sistema, actualiza su información en el abb:
 
-		abb_guardar(abb, concatenar_cad_sep(info_vuelo[POS_FECHA_VUELO], info_vuelo[POS_NUMERO_VUELO], " "), datos_vuelo_a_guardar);
+		if(hash_pertenece(hash, info_vuelo[POS_NUMERO_VUELO])){
+			char* abb_clave_vieja = (char*)hash_obtener(hash, info_vuelo[POS_NUMERO_VUELO]);
+			char** datos_vuelo_viejos = split(abb_clave_vieja, ' ');
+			abb_clave_vieja = concatenar_cad_sep(datos_vuelo_viejos[POS_FECHA_VUELO], datos_vuelo_viejos[POS_NUMERO_VUELO]," ");
+			abb_borrar(abb, abb_clave_vieja);
+			free_strv(datos_vuelo_viejos);
+		}
 		hash_guardar(hash, info_vuelo[POS_NUMERO_VUELO], datos_vuelo_a_guardar);
+		abb_guardar(abb, concatenar_cad_sep(info_vuelo[POS_FECHA_VUELO], info_vuelo[POS_NUMERO_VUELO], " "), datos_vuelo_a_guardar);
+		
 		
 		free_strv(info_vuelo);
 	}
@@ -80,7 +88,7 @@ bool borrar(abb_t* abb, hash_t* hash, char* fecha_desde, char* fecha_hasta){
 	//Borra los vuelos correspondientes en el abb.
 	for(size_t j = 0; j < i; j++)
 		abb_borrar(abb, abb_claves[j]);
-			
+
 	free(abb_claves);
 
 	return true;
