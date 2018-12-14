@@ -78,10 +78,10 @@ bool borrar(abb_t* abb, hash_t* hash, char* fecha_desde, char* fecha_hasta){
 	abb_iter_in_destruir(iter);
 	
 	//Borra los vuelos correspondientes en el abb.
-	for(size_t j = 0; j < i; j++){
+	for(size_t j = 0; j < i; j++)
 		abb_borrar(abb, abb_claves[j]);
-		free(abb_claves[j]);
-	}
+			
+	free(abb_claves);
 
 	return true;
 }
