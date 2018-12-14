@@ -36,7 +36,7 @@ bool agregar_archivo(char* nombre_archivo, hash_t* hash, abb_t* abb){
 		
 		//Si el número de vuelo ya se encuentra en el sistema, actualiza su información en el abb:
 
-		abb_guardar(abb, concatenar_cad_sep(info_vuelo[POS_FECHA_VUELO], info_vuelo[POS_NUMERO_VUELO], '-'), datos_vuelo_a_guardar);
+		abb_guardar(abb, concatenar_cad_sep(info_vuelo[POS_FECHA_VUELO], info_vuelo[POS_NUMERO_VUELO], ' '), datos_vuelo_a_guardar);
 		hash_guardar(hash, info_vuelo[POS_NUMERO_VUELO], datos_vuelo_a_guardar);
 		
 		free_strv(info_vuelo);
@@ -88,16 +88,20 @@ bool ver_tablero(abb_t* abb, size_t cantidad_vuelos, char* fecha_desde, char* fe
 
 	abb_iter_t* iter = abb_iter_in_crear(abb, fecha_desde, fecha_hasta);
 	const char* clave;
+	char** datos_vuelo;
+	char* a_imprimir;
 	size_t j;
 	
 	clave = abb_iter_in_ver_actual(iter);
 	
 	for(j = 0; !abb_iter_in_al_final(iter) && comparar_claves_abb(clave, fecha_hasta) < 0; j++){
 		
+		datos_vuelo = split(clave, ' ');
+		a_imprimir = concatenar_cad_sep(*datos_vuelo, datos_vuelo[1], '-');
 		if(!strcmp(modo, MODO_ASCENDENTE))
-			cola_encolar(cola_a_imprimir, (char*)clave);
+			cola_encolar(cola_a_imprimir, a_imprimir);
 		else
-			pila_apilar(pila_a_imprimir, (char*)clave);
+			pila_apilar(pila_a_imprimir, a_imprimir);
 
 		abb_iter_in_rango_avanzar(iter);
 		clave = abb_iter_in_ver_actual(iter);

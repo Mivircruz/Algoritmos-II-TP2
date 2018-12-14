@@ -130,8 +130,9 @@ int comparar_fechas(const char* fecha_inicio, const char* fecha_fin){
 
 int comparar_claves_abb(const char* clave1, const char* clave2){
 
-	char** fecha_y_clave_1 = split(clave1, '-');
-	char** fecha_y_clave_2 = split(clave2, '-');
+	char** fecha_y_clave_1 = split(clave1, ' ');
+	char** fecha_y_clave_2 = split(clave2, ' ');
+
 	int comp = comparar_fechas(*fecha_y_clave_1, *fecha_y_clave_2);
 	if(!comp)
 		comp = strcmp(fecha_y_clave_1[1], fecha_y_clave_2[1]);
