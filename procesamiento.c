@@ -135,7 +135,7 @@ bool ver_tablero(abb_t* abb, size_t cantidad_vuelos, char* fecha_desde, char* fe
 
 		abb_iter_in_rango_avanzar(iter);
 		clave = abb_iter_in_ver_actual(iter);
-		free(datos_vuelo);
+		free_strv(datos_vuelo);
 	}
 
 	for(size_t i = 0; i < cantidad_vuelos; i++){
@@ -147,14 +147,16 @@ bool ver_tablero(abb_t* abb, size_t cantidad_vuelos, char* fecha_desde, char* fe
 			}
 		}
 		else{
-			if(!pila_esta_vacia(pila_a_imprimir))
-				printf("%s\n", (char*)pila_desapilar(pila_a_imprimir));
-			
+			if(!pila_esta_vacia(pila_a_imprimir)){
+				char* desapilado = (char*)pila_desapilar(pila_a_imprimir);
+				printf("%s\n", desapilado);
+				free(desapilado);		
+			}
 		}
 	}
 	
 	abb_iter_in_destruir(iter);
-	cola_destruir(cola_a_imprimir, NULL);
+	cola_destruir(cola_a_imprimir, free);
 	pila_destruir(pila_a_imprimir);
 
 	return true;
@@ -215,14 +217,16 @@ bool prioridad_vuelos(hash_t* hash, size_t cantidad_vuelos){
 		hash_iter_avanzar(iter);
 
 	}
+	
 	for(i = 0; !heap_esta_vacio(heap); i++)
 		a_imprimir[i] = *(char***)heap_desencolar(heap);
+	
 	
 	for(i = cantidad_vuelos-1; 0 <= i; i--){
 		printf("%s - %s\n", *(a_imprimir[i]), a_imprimir[i][1]);
 		
 	}
-		
+	
 	heap_destruir(heap, destruir_prioridad_y_clave);
 	hash_iter_destruir(iter);
 	for(i = 0; i < contador; i++){
@@ -232,11 +236,4 @@ bool prioridad_vuelos(hash_t* hash, size_t cantidad_vuelos){
 	free(a_imprimir);
 	return true;
 }
-
-
-
-
-
-
-
 
