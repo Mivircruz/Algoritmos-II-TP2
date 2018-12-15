@@ -190,24 +190,23 @@ bool prioridad_vuelos(hash_t* hash, size_t cantidad_vuelos){
 	char*** a_imprimir = malloc(sizeof(char**)*cantidad_vuelos);
 	char** a_comparar;
 	char*** reemplazante;
-	long int i, contador = 0;
+	long int i = 0;
 
 	for(i = 0; i < cantidad_vuelos && !hash_iter_al_final(iter); i++){
  
 		a_encolar[i] = prioridad_y_clave((char*)hash_obtener(hash, hash_iter_ver_actual(iter)));
-		contador++;
 		heap_encolar(heap, &(a_encolar[i]));
 		hash_iter_avanzar(iter);
 	}
 	while(!hash_iter_al_final(iter)){
 		
 		a_comparar = prioridad_y_clave((char*)hash_obtener(hash, hash_iter_ver_actual(iter)));
-		if(comparar_prioridades(heap_ver_max(heap), (void**)&a_comparar) >= 0){
+		if(comparar_prioridades(heap_ver_max(heap), (void*)&a_comparar) >= 0){
 			reemplazante = heap_desencolar(heap);
 			free(**reemplazante);
 			free((*reemplazante)[1]);
-			**reemplazante = *a_comparar;
-			(*reemplazante)[1] = a_comparar[1];
+			free(*reemplazante);
+			*reemplazante = a_comparar;
 			heap_encolar(heap, reemplazante);
 
 		}
@@ -217,21 +216,16 @@ bool prioridad_vuelos(hash_t* hash, size_t cantidad_vuelos){
 		hash_iter_avanzar(iter);
 
 	}
-	
 	for(i = 0; !heap_esta_vacio(heap); i++)
 		a_imprimir[i] = *(char***)heap_desencolar(heap);
 	
-	
 	for(i = cantidad_vuelos-1; 0 <= i; i--){
 		printf("%s - %s\n", *(a_imprimir[i]), a_imprimir[i][1]);
+		free_strv(a_imprimir[i]);
+	}
 		
-	}
-	
-	heap_destruir(heap, destruir_prioridad_y_clave);
+	heap_destruir(heap, NULL);
 	hash_iter_destruir(iter);
-	for(i = 0; i < contador; i++){
-		free_strv(a_encolar[i]);
-	}
 	free(a_encolar);
 	free(a_imprimir);
 	return true;

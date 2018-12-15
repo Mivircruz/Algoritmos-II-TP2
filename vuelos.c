@@ -191,20 +191,15 @@ void swap_datos_vuelo(char*** x, char*** y) {
 }
 
 char** prioridad_y_clave(char* linea){
+
 	char** a_devolver = malloc(sizeof(char*) * 3);
 	char** aux = split(linea, ' ');
 	*a_devolver = strdup(aux[POS_CSV_PRIO_VUELO]);
 	a_devolver[1] = strdup(aux[POS_NUMERO_VUELO]);
 	a_devolver[2] = NULL;
+	
 	free_strv(aux);
 	return a_devolver;
-}
-
-void destruir_prioridad_y_clave(void* a){
-	char*** aux = (char***)a;
-	free(**aux);
-	free((*aux)[1]);
-	free(*aux);
 }
 
 void destruir_fecha_y_clave(char*** datos_vuelos, size_t cantidad){

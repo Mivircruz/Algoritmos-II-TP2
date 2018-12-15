@@ -31,9 +31,6 @@ char** fecha_y_clave(const char* fecha, char* vuelo);
 //Devuelve un arreglo que contiene la prioridad y la clave del vuelo
 char** prioridad_y_clave(char* linea);
 
-//Destruye un arreglo que contiene la prioridad y la clave del vuelo.
-void destruir_prioridad_y_clave(void* a);
-
 //Destruye un arreglo que contiene la fecha y la clave del vuelo.
 void destruir_fecha_y_clave(char*** datos_vuelos, size_t cantidad);
 
