@@ -157,7 +157,7 @@ bool ver_tablero(abb_t* abb, size_t cantidad_vuelos, char* fecha_desde, char* fe
 	
 	abb_iter_in_destruir(iter);
 	cola_destruir(cola_a_imprimir, free);
-	pila_destruir(pila_a_imprimir);
+	pila_destruir(pila_a_imprimir, free);
 
 	return true;
 }
