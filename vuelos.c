@@ -158,21 +158,16 @@ int comparar_prioridades(const void* a, const void* b){
 	char* ptr;
 	char** vuelo1 = *(char***)a;
 	char**vuelo2 = *(char***)b;
+
 	long int prioridad1 = strtol(*vuelo1,&ptr,10);
 	long int prioridad2 = strtol(*vuelo2,&ptr,10);
-	long int codigo_vuelo1 = strtol(vuelo1[1],&ptr,10);
-	long int codigo_vuelo2 = strtol(vuelo2[1],&ptr,10);
+
 	if(prioridad1 > prioridad2)
 		return -1;
 	if(prioridad1 < prioridad2)
 		return 1;
-	if(prioridad1 == prioridad2){
-		if(codigo_vuelo2 < codigo_vuelo1)
-			return 0;
-		else
-			return -1;
-	}
-	return 0;
+	
+	return strcmp(vuelo1[1],vuelo2[1]);
 }
 
 char** fecha_y_clave(const char* fecha, char* vuelo){
@@ -196,10 +191,11 @@ void swap_datos_vuelo(char*** x, char*** y) {
 }
 
 char** prioridad_y_clave(char* linea){
-	char** a_devolver = malloc(sizeof(char*) * 2);
+	char** a_devolver = malloc(sizeof(char*) * 3);
 	char** aux = split(linea, ' ');
 	*a_devolver = strdup(aux[POS_CSV_PRIO_VUELO]);
 	a_devolver[1] = strdup(aux[POS_NUMERO_VUELO]);
+	a_devolver[2] = NULL;
 	free_strv(aux);
 	return a_devolver;
 }
